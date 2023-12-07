@@ -4,7 +4,7 @@ export default class Project {
 
   constructor(displayName) {
     this.#displayName = displayName;
-    this.#todos = [];
+    this.#todos = new Set();
   }
 
   set displayName(displayName) {
@@ -20,18 +20,10 @@ export default class Project {
   }
 
   addTodo(todo) {
-    if (this.#todos.includes(todo)) {
-      return;
-    }
-
-    this.#todos.push(todo);
+    this.#todos.add(todo);
   }
 
-  removeTodo(todo) {
-    if (!this.#todos.includes(todo)) {
-      return;
-    }
-
-    this.#todos.splice(this.#todos.indexOf(todo), 1);
+  deleteTodo(todo) {
+    this.#todos.delete(todo);
   }
 }
