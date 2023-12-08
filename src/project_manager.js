@@ -28,17 +28,17 @@ export default class ProjectManager {
     this.#projects.splice(this.#projects.indexOf(project), 1);
   }
 
-  getAllTasksThisWeek() {
-    return this.#getAllTasks().filter((todo) =>
+  getAllTodosThisWeek() {
+    return this.#getAllTodos().filter((todo) =>
       isThisWeek(todo.dueDate, { weekStartsOn: 1 })
     );
   }
 
-  getAllTasksToday() {
-    return this.#getAllTasks().filter((todo) => isToday(todo.dueDate));
+  getAllTodosToday() {
+    return this.#getAllTodos().filter((todo) => isToday(todo.dueDate));
   }
 
-  #getAllTasks() {
+  #getAllTodos() {
     return this.#projects.flatMap((project) => project.todos);
   }
 }

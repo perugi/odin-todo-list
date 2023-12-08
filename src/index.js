@@ -45,5 +45,5 @@ testProject.todos.forEach((todo) => {
 console.log(projectManager.getProject(0).todos);
 console.log(projectManager.getProject(1).todos);
 console.log(projectManager.getProject(2).todos);
-console.log(projectManager.getAllTasksToday());
-console.log(projectManager.getAllTasksThisWeek());
+console.log(projectManager.getAllTodosToday());
+console.log(projectManager.getAllTodosThisWeek());
