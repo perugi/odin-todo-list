@@ -1,10 +1,11 @@
 import Project from "./project";
+import { isThisWeek, isToday } from "date-fns";
 
 export default class ProjectManager {
   #projects;
 
   constructor() {
-    this.#projects = new Set([new Project("Inbox")]);
+    this.#projects = [new Project("Inbox")];
   }
 
   get projects() {
@@ -12,10 +13,28 @@ export default class ProjectManager {
   }
 
   addProject(project) {
-    this.#projects.add(project);
+    if (this.#projects.includes(project)) return;
+
+    this.#projects.push(project);
   }
 
   deleteProject(project) {
-    this.#projects.delete(project);
+    if (!this.#projects.includes(project)) return;
+
+    this.#projects.splice(this.#projects.indexOf(project), 1);
+  }
+
+  getAllTasksThisWeek() {
+    return this.#getAllTasks().filter((todo) =>
+      isThisWeek(todo.dueDate, { weekStartsOn: 1 })
+    );
+  }
+
+  getAllTasksToday() {
+    return this.#getAllTasks().filter((todo) => isToday(todo.dueDate));
+  }
+
+  #getAllTasks() {
+    return this.#projects.flatMap((project) => project.todos);
   }
 }
