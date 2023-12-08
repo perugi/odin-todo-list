@@ -8,8 +8,8 @@ export default class ProjectManager {
     this.#projects = [new Project("Inbox")];
   }
 
-  get projects() {
-    return this.#projects;
+  getProject(index) {
+    return this.#projects[index];
   }
 
   addProject(project) {
@@ -19,7 +19,11 @@ export default class ProjectManager {
   }
 
   deleteProject(project) {
-    if (!this.#projects.includes(project)) return;
+    if (
+      !this.#projects.includes(project) ||
+      this.#projects.indexOf(project) === 0
+    )
+      return;
 
     this.#projects.splice(this.#projects.indexOf(project), 1);
   }
