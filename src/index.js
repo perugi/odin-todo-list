@@ -8,7 +8,12 @@ import Project from "./project";
 import ProjectManager from "./project_manager";
 import priority from "./priority";
 
-import { renderProjects, renderTodoList, renderNewTodoForm } from "./render";
+import {
+  renderUserProjects,
+  renderTodoList,
+  renderNewTodoForm,
+  renderNewProject,
+} from "./render";
 
 let projectManager = new ProjectManager();
 
@@ -28,7 +33,8 @@ projectManager
 console.log(projectManager.getProject(1));
 console.log(projectManager.getProject(1).todos);
 
-renderProjects(projectManager.getUserProjects());
+renderUserProjects(projectManager.getUserProjects(), projectManager);
+renderNewProject(projectManager);
 renderTodoList(projectManager.getProject(1).todos);
 renderNewTodoForm();
 

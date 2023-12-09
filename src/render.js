@@ -1,15 +1,34 @@
 import { format } from "date-fns";
 import priority from "./priority";
+import Project from "./project";
 
-export function renderProjects(projectList) {
-  const userProjects = document.querySelector("#user-projects>ul");
+export function renderUserProjects(projects, projectManager) {
+  const userProjects = document.querySelector("#user-projects");
+  removeChildren(userProjects);
 
-  projectList.forEach((project) => {
-    const newProject = document.createElement("li");
-    newProject.textContent = project.displayName;
-    userProjects.appendChild(newProject);
+  projects.forEach((project) => {
+    const projectElement = document.createElement("div");
+    projectElement.classList.add("project-element");
+
+    const projectName = document.createElement("div");
+    projectName.textContent = project.displayName;
+    projectName.classList.add("project-name");
+
+    const deleteProject = document.createElement("button");
+    deleteProject.textContent = "X";
+    deleteProject.classList.add("delete-project-button");
+    deleteProject.addEventListener("click", () => {
+      projectManager.deleteProject(project);
+      renderUserProjects(projectManager.getUserProjects(), projectManager);
+    });
+
+    projectElement.appendChild(projectName);
+    projectElement.appendChild(deleteProject);
+    userProjects.appendChild(projectElement);
   });
+}
 
+export function renderNewProject(projectManager) {
   const newProject = document.querySelector("#new-project");
 
   const name = document.createElement("input");
@@ -20,6 +39,10 @@ export function renderProjects(projectList) {
   const button = document.createElement("button");
   button.id = "new-project-button";
   button.textContent = "New Project";
+  button.addEventListener("click", () => {
+    projectManager.addProject(new Project(name.value));
+    renderUserProjects(projectManager.getUserProjects(), projectManager);
+  });
 
   newProject.appendChild(name);
   newProject.appendChild(button);
@@ -36,6 +59,12 @@ export function renderTodoList(todos) {
     )} ${todo.priority} ${todo.completed}`;
     todoList.appendChild(newTodo);
   });
+}
+
+function removeChildren(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
 }
 
 export function renderNewTodoForm() {
