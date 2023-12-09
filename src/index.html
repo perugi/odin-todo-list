@@ -10,14 +10,33 @@
         <div class="header">ToDo List</div>
     </header>
     <main>
-        <div class="selection-panel"></div>
-        <div class="todo-panel"></div>
+        <div class="selection-panel">
+            <div class="static-selection">
+                <ul>
+                    <li class="inbox">Inbox</li>
+                    <li class="today">Today</li>
+                    <li class="this-week">This Week</li>
+                </ul>
+            </div>  
+            <div class="user-projects">
+                <ul>
+                </ul>
+            </div>
+            <button class="add-project">Add Project</button>
+        </div>
+        <div class="todo-panel">
+            <div class="todo-list">
+                <ul>
+                </ul>
+            </div>
+            <button class="add-todo">Add Todo</button>
+        </div>
     </main>
     <footer>
         <div class="author">
             <a id="gh-link" href="https://github.com/perugi">
                 <div>Made by</div>
-                <img id="gh-logo" src="img/githublogo.png">
+                <img id="gh-logo">
                 <div>Dominik Perusko</div>
             </a>
         </div>

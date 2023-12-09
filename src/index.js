@@ -1,7 +1,12 @@
+import "./reset.css";
+import "./styles.css";
+
 import Todo from "./todo";
 import Project from "./project";
 import ProjectManager from "./project_manager";
 import priority from "./priority";
+
+import GhLogo from "./img/githublogo.png";
 
 let projectManager = new ProjectManager();
 
@@ -47,3 +52,6 @@ console.log(projectManager.getProject(1).todos);
 console.log(projectManager.getProject(2).todos);
 console.log(projectManager.getAllTodosToday());
 console.log(projectManager.getAllTodosThisWeek());
+
+const ghLogo = document.querySelector("#gh-logo");
+ghLogo.src = GhLogo;
