@@ -2,13 +2,16 @@ import { format } from "date-fns";
 import priority from "./priority";
 import Project from "./project";
 
-export function renderUserProjects(projects, projectManager) {
+export function renderUserProjects(projectManager) {
   const userProjects = document.querySelector("#user-projects");
   removeChildren(userProjects);
 
-  projects.forEach((project) => {
+  projectManager.getUserProjects().forEach((project) => {
     const projectElement = document.createElement("div");
     projectElement.classList.add("project-element");
+    projectElement.addEventListener("click", () => {
+      renderTodoList(project.todos);
+    });
 
     const projectName = document.createElement("div");
     projectName.textContent = project.displayName;
@@ -50,6 +53,8 @@ export function renderNewProject(projectManager) {
 
 export function renderTodoList(todos) {
   const todoList = document.querySelector("#todo-list");
+
+  removeChildren(todoList);
 
   todos.forEach((todo) => {
     const newTodo = document.createElement("div");

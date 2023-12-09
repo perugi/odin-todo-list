@@ -42,7 +42,7 @@ projectManager.getProject(1).addTodo(completedTodo);
 console.log(projectManager.getProject(1));
 console.log(projectManager.getProject(1).todos);
 
-renderUserProjects(projectManager.getUserProjects(), projectManager);
+renderUserProjects(projectManager);
 renderNewProject(projectManager);
 renderTodoList(projectManager.getProject(1).todos);
 renderNewTodoForm();
