@@ -9,20 +9,20 @@ export function renderUserProjects(projectManager) {
   projectManager.getUserProjects().forEach((project) => {
     const projectElement = document.createElement("div");
     projectElement.classList.add("project-element");
-    projectElement.addEventListener("click", () => {
-      renderTodoList(project.todos);
-    });
 
     const projectName = document.createElement("div");
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
+    projectName.addEventListener("click", () => {
+      renderTodoList(project.todos);
+    });
 
     const deleteProject = document.createElement("button");
     deleteProject.textContent = "X";
     deleteProject.classList.add("delete-project-button");
     deleteProject.addEventListener("click", () => {
       projectManager.deleteProject(project);
-      renderUserProjects(projectManager.getUserProjects(), projectManager);
+      renderUserProjects(projectManager);
     });
 
     projectElement.appendChild(projectName);
@@ -44,7 +44,7 @@ export function renderNewProject(projectManager) {
   button.textContent = "New Project";
   button.addEventListener("click", () => {
     projectManager.addProject(new Project(name.value));
-    renderUserProjects(projectManager.getUserProjects(), projectManager);
+    renderUserProjects(projectManager);
   });
 
   newProject.appendChild(name);

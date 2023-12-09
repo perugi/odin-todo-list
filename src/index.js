@@ -37,7 +37,7 @@ let completedTodo = new Todo(
   priority.HIGH
 );
 completedTodo.completed = true;
-projectManager.getProject(1).addTodo(completedTodo);
+projectManager.getProject(2).addTodo(completedTodo);
 
 console.log(projectManager.getProject(1));
 console.log(projectManager.getProject(1).todos);
