@@ -8,7 +8,12 @@ import Project from "./project";
 import ProjectManager from "./project_manager";
 import priority from "./priority";
 
-import { renderUserProjects, renderTodoList, renderNewProject } from "./render";
+import {
+  renderUserProjects,
+  renderTodoList,
+  renderNewProject,
+  createStaticEventListeners,
+} from "./render";
 
 let projectManager = new ProjectManager();
 
@@ -28,15 +33,13 @@ projectManager
 let completedTodo = new Todo(
   "completed",
   "this is a test",
-  new Date(),
+  new Date(2023, 11, 10),
   priority.HIGH
 );
 completedTodo.completed = true;
 projectManager.getProject(2).addTodo(completedTodo);
 
-console.log(projectManager.getProject(1));
-console.log(projectManager.getProject(1).todos);
-
+createStaticEventListeners(projectManager);
 renderUserProjects(projectManager);
 renderNewProject(projectManager);
 renderTodoList(

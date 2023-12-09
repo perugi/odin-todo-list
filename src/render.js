@@ -3,6 +3,28 @@ import priority from "./priority";
 import Project from "./project";
 import Todo from "./todo";
 
+export function createStaticEventListeners(projectManager) {
+  const inbox = document.querySelector("#inbox");
+  inbox.addEventListener("click", () => {
+    renderTodoList(
+      projectManager.getProject(0).todos,
+      projectManager.getProject(0)
+    );
+  });
+
+  const today = document.querySelector("#today");
+  today.addEventListener("click", () => {
+    renderTodoList(projectManager.getAllTodosToday());
+    console.log(projectManager.getAllTodosToday());
+  });
+
+  const thisWeek = document.querySelector("#this-week");
+  thisWeek.addEventListener("click", () => {
+    renderTodoList(projectManager.getAllTodosThisWeek());
+    console.log(projectManager.getAllTodosThisWeek());
+  });
+}
+
 export function renderUserProjects(projectManager) {
   const userProjects = document.querySelector("#user-projects");
   removeChildren(userProjects);
@@ -15,7 +37,7 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderTodoList(project.todos);
+      renderTodoList(project.todos, project);
     });
 
     const deleteProject = document.createElement("button");
@@ -78,20 +100,17 @@ export function renderTodoList(todos, project) {
     todoList.appendChild(newTodo);
   });
 
-  if (project) {
-    renderNewTodoForm(project);
+  const newTodo = document.querySelector("#new-todo");
+  if (project === undefined) {
+    newTodo.style.display = "none";
+  } else {
+    newTodo.style.display = "block";
+    renderNewTodoForm(newTodo, project);
   }
 }
 
-function removeChildren(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
-
-function renderNewTodoForm(project) {
-  const todoList = document.querySelector("#new-todo");
-  removeChildren(todoList);
+function renderNewTodoForm(newTodo, project) {
+  removeChildren(newTodo);
 
   const title = document.createElement("input");
   title.id = "new-todo-title";
@@ -130,9 +149,15 @@ function renderNewTodoForm(project) {
     renderTodoList(project.todos, project);
   });
 
-  todoList.appendChild(title);
-  todoList.appendChild(description);
-  todoList.appendChild(dueDate);
-  todoList.appendChild(prioritySelector);
-  todoList.appendChild(button);
+  newTodo.appendChild(title);
+  newTodo.appendChild(description);
+  newTodo.appendChild(dueDate);
+  newTodo.appendChild(prioritySelector);
+  newTodo.appendChild(button);
+}
+
+function removeChildren(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
 }
