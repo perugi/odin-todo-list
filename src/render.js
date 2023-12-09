@@ -1,6 +1,7 @@
-import { format } from "date-fns";
+import { format, parse, parseISO } from "date-fns";
 import priority from "./priority";
 import Project from "./project";
+import Todo from "./todo";
 
 export function renderUserProjects(projectManager) {
   const userProjects = document.querySelector("#user-projects");
@@ -51,9 +52,8 @@ export function renderNewProject(projectManager) {
   newProject.appendChild(button);
 }
 
-export function renderTodoList(todos) {
+export function renderTodoList(todos, project) {
   const todoList = document.querySelector("#todo-list");
-
   removeChildren(todoList);
 
   todos.forEach((todo) => {
@@ -77,6 +77,10 @@ export function renderTodoList(todos) {
 
     todoList.appendChild(newTodo);
   });
+
+  if (project) {
+    renderNewTodoForm(project);
+  }
 }
 
 function removeChildren(parent) {
@@ -85,8 +89,9 @@ function removeChildren(parent) {
   }
 }
 
-export function renderNewTodoForm() {
+function renderNewTodoForm(project) {
   const todoList = document.querySelector("#new-todo");
+  removeChildren(todoList);
 
   const title = document.createElement("input");
   title.id = "new-todo-title";
@@ -113,6 +118,17 @@ export function renderNewTodoForm() {
   const button = document.createElement("button");
   button.id = "new-todo-button";
   button.textContent = "Add Todo";
+  button.addEventListener("click", () => {
+    project.addTodo(
+      new Todo(
+        title.value,
+        description.value,
+        parseISO(dueDate.value),
+        priority[prioritySelector.value]
+      )
+    );
+    renderTodoList(project.todos, project);
+  });
 
   todoList.appendChild(title);
   todoList.appendChild(description);

@@ -8,12 +8,7 @@ import Project from "./project";
 import ProjectManager from "./project_manager";
 import priority from "./priority";
 
-import {
-  renderUserProjects,
-  renderTodoList,
-  renderNewTodoForm,
-  renderNewProject,
-} from "./render";
+import { renderUserProjects, renderTodoList, renderNewProject } from "./render";
 
 let projectManager = new ProjectManager();
 
@@ -44,8 +39,10 @@ console.log(projectManager.getProject(1).todos);
 
 renderUserProjects(projectManager);
 renderNewProject(projectManager);
-renderTodoList(projectManager.getProject(1).todos);
-renderNewTodoForm();
+renderTodoList(
+  projectManager.getProject(1).todos,
+  projectManager.getProject(1)
+);
 
 const ghLogo = document.querySelector("#gh-logo");
 ghLogo.src = GhLogo;
