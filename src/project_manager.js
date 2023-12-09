@@ -12,6 +12,10 @@ export default class ProjectManager {
     return this.#projects[index];
   }
 
+  getUserProjects() {
+    return [...this.#projects.slice(1)];
+  }
+
   addProject(project) {
     if (this.#projects.includes(project)) return;
 

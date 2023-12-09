@@ -1,57 +1,36 @@
 import "./reset.css";
 import "./styles.css";
 
+import GhLogo from "./img/githublogo.png";
+
 import Todo from "./todo";
 import Project from "./project";
 import ProjectManager from "./project_manager";
 import priority from "./priority";
 
-import GhLogo from "./img/githublogo.png";
+import { renderPriorityList, renderProjects, renderTodos } from "./render";
 
 let projectManager = new ProjectManager();
 
-let testProject = new Project("Test Project");
-projectManager.addProject(testProject);
-projectManager.addProject(testProject);
-let testProject2 = new Project("Test Project 2");
-projectManager.addProject(testProject2);
+projectManager.addProject(new Project("test"));
+projectManager.addProject(new Project("test2"));
 
-let testTodo = new Todo(
-  "Test TODO",
-  "This is a test TODO",
-  new Date(2023, 11, 8),
-  priority.HIGH
-);
+projectManager
+  .getProject(1)
+  .addTodo(new Todo("test", "this is a test", new Date(), priority.LOW));
+projectManager
+  .getProject(1)
+  .addTodo(new Todo("test2", "this is a test", new Date(), priority.MEDIUM));
+projectManager
+  .getProject(1)
+  .addTodo(new Todo("test3", "this is a test", new Date(), priority.HIGH));
 
-let testTodo2 = new Todo(
-  "Test TODO 2",
-  "This is a test TODO",
-  new Date(2023, 11, 9),
-  priority.MEDIUM
-);
-
-let testTodo3 = new Todo(
-  "Test TODO 3",
-  "This is a test TODO",
-  new Date(2023, 11, 10),
-  priority.MEDIUM
-);
-
-testProject.addTodo(testTodo);
-testProject.addTodo(testTodo2);
-testProject.addTodo(testTodo2);
-testProject2.addTodo(testTodo3);
-
-testProject.todos.forEach((todo) => {
-  console.log(todo.title);
-  console.log(todo.dueDate);
-});
-
-console.log(projectManager.getProject(0).todos);
+console.log(projectManager.getProject(1));
 console.log(projectManager.getProject(1).todos);
-console.log(projectManager.getProject(2).todos);
-console.log(projectManager.getAllTodosToday());
-console.log(projectManager.getAllTodosThisWeek());
+
+renderProjects(projectManager.getUserProjects());
+renderTodos(projectManager.getProject(1));
+renderPriorityList();
 
 const ghLogo = document.querySelector("#gh-logo");
 ghLogo.src = GhLogo;

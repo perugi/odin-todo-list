@@ -12,6 +12,12 @@ footer {
     align-items: center;
 }
 
+#new-todo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 #gh-link {
     text-decoration: none;
     font-size: 14px;
