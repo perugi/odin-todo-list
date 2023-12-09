@@ -53,10 +53,23 @@ export function renderTodoList(todos) {
 
   todos.forEach((todo) => {
     const newTodo = document.createElement("div");
-    newTodo.textContent = `${todo.title} ${todo.description} ${format(
+    newTodo.classList.add("todo-element");
+
+    const check = document.createElement("input");
+    check.checked = todo.completed;
+    check.type = "checkbox";
+    check.addEventListener("change", () => {
+      todo.completed = check.checked;
+    });
+    newTodo.appendChild(check);
+
+    const todoDescription = document.createElement("div");
+    todoDescription.textContent = `${todo.title} ${todo.description} ${format(
       todo.dueDate,
       "d.M.yyyy"
-    )} ${todo.priority} ${todo.completed}`;
+    )} ${todo.priority}`;
+    newTodo.appendChild(todoDescription);
+
     todoList.appendChild(newTodo);
   });
 }

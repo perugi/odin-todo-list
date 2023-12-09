@@ -12,7 +12,12 @@ footer {
     align-items: center;
 }
 
-#project-element {
+.project-element {
+    display: flex;
+    flex-direction: row;
+}
+
+.todo-element {
     display: flex;
     flex-direction: row;
 }

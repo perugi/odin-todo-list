@@ -30,6 +30,15 @@ projectManager
   .getProject(1)
   .addTodo(new Todo("test3", "this is a test", new Date(), priority.HIGH));
 
+let completedTodo = new Todo(
+  "completed",
+  "this is a test",
+  new Date(),
+  priority.HIGH
+);
+completedTodo.completed = true;
+projectManager.getProject(1).addTodo(completedTodo);
+
 console.log(projectManager.getProject(1));
 console.log(projectManager.getProject(1).todos);
 
