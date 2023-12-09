@@ -67,6 +67,7 @@ export function renderNewProject(projectManager) {
   button.textContent = "New Project";
   button.addEventListener("click", () => {
     projectManager.addProject(new Project(name.value));
+    name.value = "";
     renderUserProjects(projectManager);
   });
 
