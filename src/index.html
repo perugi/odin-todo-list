@@ -6,6 +6,16 @@
     <title>Todo List</title>
 </head>
 <body>
+    <div id="new-project-modal">
+        <div class="modal-content">
+            <div id="close-project-modal">&times;</div>
+            <div>
+                <label for="project-name-form"><span class="modal-label">Project Name:</span></label>
+                <input type="text" id="new-project-name" class="modal-input">
+            </div>
+            <input type="button" value="Create Project" id="create-project-button">
+        </div>
+    </div>
     <header>
         <div id="header">ToDo List</div>
     </header>
@@ -20,7 +30,7 @@
             </div>  
             <div id="my-projects">
                 <div>My Projects</div>
-                <div id="new-project"></div>
+                <div id="new-project"><button id="new-project-button">+</button></div>
             </div>
             <div id="user-projects">
                 <ul>

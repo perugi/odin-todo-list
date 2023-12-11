@@ -8,7 +8,6 @@ import ProjectManager from "./project_manager";
 import {
   renderUserProjects,
   renderTodoList,
-  renderNewProject,
   createStaticEventListeners,
 } from "./render";
 
@@ -16,7 +15,6 @@ let projectManager = new ProjectManager();
 
 createStaticEventListeners(projectManager);
 renderUserProjects(projectManager);
-renderNewProject(projectManager);
 renderTodoList(
   projectManager.getProject(0).todos,
   projectManager.getProject(0)

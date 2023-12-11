@@ -27,6 +27,37 @@ export function createStaticEventListeners(projectManager) {
     });
     console.log(projectManager.getAllTodosThisWeek());
   });
+
+  const newProject = document.querySelector("#new-project-button");
+  newProject.addEventListener("click", () => {
+    showNewProjectModal();
+  });
+
+  const createProject = document.querySelector("#create-project-button");
+  createProject.addEventListener("click", () => {
+    const projectName = document.querySelector("#new-project-name");
+    projectManager.addProject(new Project(projectName.value));
+    projectName.value = "";
+    renderUserProjects(projectManager);
+    hideNewProjectModal();
+  });
+
+  const closeProjectModal = document.querySelector("#close-project-modal");
+  closeProjectModal.addEventListener("click", () => {
+    const projectName = document.querySelector("#new-project-name");
+    projectName.value = "";
+    hideNewProjectModal();
+  });
+}
+
+function showNewProjectModal() {
+  const newProject = document.querySelector("#new-project-modal");
+  newProject.style.display = "block";
+}
+
+function hideNewProjectModal() {
+  const newProject = document.querySelector("#new-project-modal");
+  newProject.style.display = "none";
 }
 
 export function renderUserProjects(projectManager) {
@@ -56,27 +87,6 @@ export function renderUserProjects(projectManager) {
     projectElement.appendChild(deleteProject);
     userProjects.appendChild(projectElement);
   });
-}
-
-export function renderNewProject(projectManager) {
-  const newProject = document.querySelector("#new-project");
-
-  const name = document.createElement("input");
-  name.id = "new-project-name";
-  name.type = "text";
-  name.placeholder = "Project Name";
-
-  const button = document.createElement("button");
-  button.id = "new-project-button";
-  button.textContent = "New Project";
-  button.addEventListener("click", () => {
-    projectManager.addProject(new Project(name.value));
-    name.value = "";
-    renderUserProjects(projectManager);
-  });
-
-  newProject.appendChild(name);
-  newProject.appendChild(button);
 }
 
 export function renderTodoList(todos, project) {
