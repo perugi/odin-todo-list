@@ -14,13 +14,17 @@ export function createStaticEventListeners(projectManager) {
 
   const today = document.querySelector("#today");
   today.addEventListener("click", () => {
-    renderTodoList(projectManager.getAllTodosToday());
+    renderTodoList(projectManager.getAllTodosToday(), {
+      displayName: "Today",
+    });
     console.log(projectManager.getAllTodosToday());
   });
 
   const thisWeek = document.querySelector("#this-week");
   thisWeek.addEventListener("click", () => {
-    renderTodoList(projectManager.getAllTodosThisWeek());
+    renderTodoList(projectManager.getAllTodosThisWeek(), {
+      displayName: "This Week",
+    });
     console.log(projectManager.getAllTodosThisWeek());
   });
 }
@@ -79,6 +83,10 @@ export function renderTodoList(todos, project) {
   const todoList = document.querySelector("#todo-list");
   removeChildren(todoList);
 
+  const projectName = document.createElement("h1");
+  projectName.textContent = project.displayName;
+  todoList.appendChild(projectName);
+
   todos.forEach((todo) => {
     const newTodo = document.createElement("div");
     newTodo.classList.add("todo-element");
@@ -102,11 +110,11 @@ export function renderTodoList(todos, project) {
   });
 
   const newTodo = document.querySelector("#new-todo");
-  if (project === undefined) {
-    newTodo.style.display = "none";
-  } else {
+  if (project instanceof Project) {
     newTodo.style.display = "block";
     renderNewTodoForm(newTodo, project);
+  } else {
+    newTodo.style.display = "none";
   }
 }
 
