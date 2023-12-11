@@ -16,6 +16,10 @@ footer {
     display: none;
 }
 
+#add-todo-modal {
+    display: none;
+}
+
 .project-element {
     display: flex;
     flex-direction: row;

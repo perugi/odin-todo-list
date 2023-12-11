@@ -1,4 +1,4 @@
-import { format, parse, parseISO } from "date-fns";
+import { add, format, parse, parseISO } from "date-fns";
 import priority from "./priority";
 import Project from "./project";
 import Todo from "./todo";
@@ -17,7 +17,6 @@ export function createStaticEventListeners(projectManager) {
     renderTodoList(projectManager.getAllTodosToday(), {
       displayName: "Today",
     });
-    console.log(projectManager.getAllTodosToday());
   });
 
   const thisWeek = document.querySelector("#this-week");
@@ -25,29 +24,27 @@ export function createStaticEventListeners(projectManager) {
     renderTodoList(projectManager.getAllTodosThisWeek(), {
       displayName: "This Week",
     });
-    console.log(projectManager.getAllTodosThisWeek());
   });
 
   const newProject = document.querySelector("#new-project-button");
-  newProject.addEventListener("click", () => {
-    showNewProjectModal();
-  });
+  newProject.addEventListener("click", showNewProjectModal);
 
   const createProject = document.querySelector("#create-project-button");
   createProject.addEventListener("click", () => {
     const projectName = document.querySelector("#new-project-name");
     projectManager.addProject(new Project(projectName.value));
-    projectName.value = "";
     renderUserProjects(projectManager);
     hideNewProjectModal();
   });
 
   const closeProjectModal = document.querySelector("#close-project-modal");
-  closeProjectModal.addEventListener("click", () => {
-    const projectName = document.querySelector("#new-project-name");
-    projectName.value = "";
-    hideNewProjectModal();
-  });
+  closeProjectModal.addEventListener("click", hideNewProjectModal);
+
+  const newTodo = document.querySelector("#new-todo-button");
+  newTodo.addEventListener("click", showAddTodoModal);
+
+  const closeTodoModal = document.querySelector("#close-todo-modal");
+  closeTodoModal.addEventListener("click", hideAddTodoModal);
 }
 
 function showNewProjectModal() {
@@ -57,7 +54,22 @@ function showNewProjectModal() {
 
 function hideNewProjectModal() {
   const newProject = document.querySelector("#new-project-modal");
+  const projectName = document.querySelector("#new-project-name");
+  projectName.value = "";
   newProject.style.display = "none";
+}
+
+function showAddTodoModal() {
+  const addTodo = document.querySelector("#add-todo-modal");
+  addTodo.style.display = "block";
+}
+
+function hideAddTodoModal() {
+  const addTodo = document.querySelector("#add-todo-modal");
+
+  console.log("hide");
+  // TODO add clearing of the form fields.
+  addTodo.style.display = "none";
 }
 
 export function renderUserProjects(projectManager) {
@@ -122,57 +134,36 @@ export function renderTodoList(todos, project) {
   const newTodo = document.querySelector("#new-todo");
   if (project instanceof Project) {
     newTodo.style.display = "block";
-    renderNewTodoForm(newTodo, project);
+    renderNewTodoButton(project);
   } else {
     newTodo.style.display = "none";
   }
 }
 
-function renderNewTodoForm(newTodo, project) {
-  removeChildren(newTodo);
-
-  const title = document.createElement("input");
-  title.id = "new-todo-title";
-  title.type = "text";
-  title.placeholder = "Title";
-
-  const description = document.createElement("textarea");
-  description.id = "new-todo-description";
-  description.placeholder = "Description";
-
-  const dueDate = document.createElement("input");
-  dueDate.id = "new-todo-date";
-  dueDate.type = "date";
-
-  const prioritySelector = document.createElement("select");
-  prioritySelector.id = "new-todo-priority";
-  Object.values(priority).forEach((option) => {
-    const priorityOption = document.createElement("option");
-    priorityOption.textContent = option;
-    priorityOption.value = option;
-    prioritySelector.appendChild(priorityOption);
-  });
+function renderNewTodoButton(project) {
+  const addTodo = document.querySelector("#add-todo-button-div");
+  addTodo.innerHTML = "";
 
   const button = document.createElement("button");
-  button.id = "new-todo-button";
+  button.id = "add-todo-button";
   button.textContent = "Add Todo";
   button.addEventListener("click", () => {
+    const todoTitle = document.querySelector("#new-todo-title");
+    const todoDescription = document.querySelector("#new-todo-description");
+    const todoDate = document.querySelector("#new-todo-date");
+    const todoPriority = document.querySelector("#new-todo-priority");
     project.addTodo(
       new Todo(
-        title.value,
-        description.value,
-        parseISO(dueDate.value),
-        priority[prioritySelector.value]
+        todoTitle.value,
+        todoDescription.value,
+        parseISO(todoDate.value),
+        todoPriority.value
       )
     );
     renderTodoList(project.todos, project);
+    hideAddTodoModal();
   });
-
-  newTodo.appendChild(title);
-  newTodo.appendChild(description);
-  newTodo.appendChild(dueDate);
-  newTodo.appendChild(prioritySelector);
-  newTodo.appendChild(button);
+  addTodo.appendChild(button);
 }
 
 function removeChildren(parent) {

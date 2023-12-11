@@ -8,16 +8,46 @@
 <body>
     <div id="new-project-modal">
         <div class="modal-content">
-            <div id="close-project-modal">&times;</div>
+            <div>New Project</div>
+            <div id="close-project-modal" class="close-modal">&times;</div>
             <div>
-                <label for="project-name-form"><span class="modal-label">Project Name:</span></label>
+                <label for="new-project-name"><span class="modal-label">Project Name:</span></label>
                 <input type="text" id="new-project-name" class="modal-input">
             </div>
             <input type="button" value="Create Project" id="create-project-button">
         </div>
     </div>
+    <div id="add-todo-modal">
+        <div class="modal-content">
+            <div>Add Todo</div>
+            <div id="close-todo-modal" class="close-modal">&times;</div>
+            <div>
+                <label for="new-todo-title"><span class="modal-label">Title:</span></label>
+                <input type="text" id="new-todo-title" class="modal-input">
+            </div>
+            <div>
+                <label for="new-todo-description"><span class="modal-label">Description:</span></label>
+                <textarea id="new-todo-description" class="modal-input"></textarea>
+            </div>
+            <div>
+                <label for="new-todo-date"><span class="modal-label">Due Date:</span></label>
+                <input type="date" id="new-todo-date" class="modal-input">
+            </div>
+            <div>
+                <label for="new-todo-priority"><span class="modal-label">Priority:</span></label>
+                <select id="new-todo-priority" class="modal-input">
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+            <div id="add-todo-button-div">
+                <input type="button" value="Add Todo" id="add-todo-button">
+            </div>
+        </div>
+    </div>
     <header>
-        <div id="header">ToDo List</div>
+        <div id="header">Todo List</div>
     </header>
     <main>
         <div id="selection-panel">
@@ -41,6 +71,7 @@
             <div id="todo-list">
             </div>
             <div id="new-todo">
+                <button id="new-todo-button">+</button>
             </div>
         </div>
     </main>
