@@ -68,7 +68,14 @@ function hideAddTodoModal() {
   const addTodo = document.querySelector("#add-todo-modal");
 
   console.log("hide");
-  // TODO add clearing of the form fields.
+  const todoTitle = document.querySelector("#new-todo-title");
+  const todoDescription = document.querySelector("#new-todo-description");
+  const todoDate = document.querySelector("#new-todo-date");
+  const todoPriority = document.querySelector("#new-todo-priority");
+  todoTitle.value = "";
+  todoDescription.value = "";
+  todoDate.value = "";
+  todoPriority.value = "";
   addTodo.style.display = "none";
 }
 
