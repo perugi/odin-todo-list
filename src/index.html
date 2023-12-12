@@ -58,6 +58,34 @@
             </div>
         </div>
     </div>
+    <div id="edit-todo-modal">
+        <div class="modal-content">
+            <div>Edit Todo</div>
+            <div id="close-edit-todo-modal" class="close-modal">&times;</div>
+            <div>
+                <label for="edit-todo-title"><span class="modal-label">Title:</span></label>
+                <input type="text" id="edit-todo-title" class="modal-input">
+            </div>
+            <div>
+                <label for="edit-todo-description"><span class="modal-label">Description:</span></label>
+                <textarea id="edit-todo-description" class="modal-input"></textarea>
+            </div>
+            <div>
+                <label for="edit-todo-date"><span class="modal-label">Due Date:</span></label>
+                <input type="date" id="edit-todo-date" class="modal-input">
+            </div>
+            <div>
+                <label for="edit-todo-priority"><span class="modal-label">Priority:</span></label>
+                <select id="edit-todo-priority" class="modal-input">
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+            <div id="edit-todo-button-div">
+            </div>
+        </div>
+    </div>
     <header>
         <div id="header">Todo List</div>
     </header>

@@ -24,6 +24,10 @@ footer {
     display: none;
 }
 
+#edit-todo-modal {
+    display: none;
+}
+
 .project-element {
     display: flex;
     flex-direction: row;

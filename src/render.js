@@ -64,6 +64,9 @@ export function createStaticEventListeners(projectManager) {
 
   const closeTodoModal = document.querySelector("#close-todo-modal");
   closeTodoModal.addEventListener("click", hideAddTodoModal);
+
+  const closeEditTodoModal = document.querySelector("#close-edit-todo-modal");
+  closeEditTodoModal.addEventListener("click", hideEditTodoModal);
 }
 
 function showNewProjectModal() {
@@ -197,6 +200,13 @@ export function renderTodoList(todos, project) {
     dueDate.textContent = format(todo.dueDate, "d.M.yyyy");
     todoOverview.appendChild(dueDate);
 
+    const editTodo = document.createElement("button");
+    editTodo.textContent = "Edit";
+    editTodo.addEventListener("click", () => {
+      showEditTodoModal(todo, todos, project);
+    });
+    todoOverview.appendChild(editTodo);
+
     const deleteTodo = document.createElement("button");
     deleteTodo.textContent = "X";
     deleteTodo.addEventListener("click", () => {
@@ -230,6 +240,57 @@ export function renderTodoList(todos, project) {
   } else {
     newTodo.style.display = "none";
   }
+}
+
+function showEditTodoModal(todo, todos, project) {
+  const editTodoTitle = document.querySelector("#edit-todo-title");
+  editTodoTitle.value = todo.title;
+
+  const editTodoDescription = document.querySelector("#edit-todo-description");
+  editTodoDescription.value = todo.description;
+
+  const editTodoDate = document.querySelector("#edit-todo-date");
+  editTodoDate.value = format(todo.dueDate, "yyyy-MM-dd");
+
+  const editTodoPriority = document.querySelector("#edit-todo-priority");
+  editTodoPriority.value = todo.priority;
+
+  const editTodoButtonDiv = document.querySelector("#edit-todo-button-div");
+  editTodoButtonDiv.innerHTML = "";
+
+  const button = document.createElement("button");
+  button.id = "confirm-edit-todo-button";
+  button.textContent = "Confirm";
+  button.addEventListener("click", () => {
+    todo.title = editTodoTitle.value;
+    todo.description = editTodoDescription.value;
+    todo.dueDate = parseISO(editTodoDate.value);
+    todo.priority = editTodoPriority.value;
+    renderTodoList(todos, project);
+    hideEditTodoModal();
+  });
+  editTodoButtonDiv.appendChild(button);
+
+  const editTodoModal = document.querySelector("#edit-todo-modal");
+  editTodoModal.style.display = "block";
+}
+
+function hideEditTodoModal() {
+  const editTodo = document.querySelector("#edit-todo-modal");
+
+  const editTodoTitle = document.querySelector("#edit-todo-title");
+  editTodoTitle.value = "";
+
+  const editTodoDescription = document.querySelector("#edit-todo-description");
+  editTodoDescription.value = "";
+
+  const editTodoDate = document.querySelector("#edit-todo-date");
+  editTodoDate.value = "";
+
+  const editTodoPriority = document.querySelector("#edit-todo-priority");
+  editTodoPriority.value = "";
+
+  editTodo.style.display = "none";
 }
 
 function renderNewTodoButton(project) {
