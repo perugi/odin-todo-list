@@ -16,6 +16,10 @@ footer {
     display: none;
 }
 
+#edit-project-modal {
+    display: none;
+}
+
 #add-todo-modal {
     display: none;
 }

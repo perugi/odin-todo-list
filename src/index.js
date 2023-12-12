@@ -1,18 +1,12 @@
 import "./reset.css";
 import "./styles.css";
 
-import GhLogo from "./img/githublogo.png";
-
 import ProjectManager from "./project_manager";
 import Project from "./project";
 import Todo from "./todo";
 import priority from "./priority";
 
-import {
-  renderUserProjects,
-  renderTodoList,
-  createStaticEventListeners,
-} from "./render";
+import { renderWebsite } from "./render";
 
 let projectManager = new ProjectManager();
 
@@ -49,12 +43,4 @@ projectManager
     )
   );
 
-createStaticEventListeners(projectManager);
-renderUserProjects(projectManager);
-renderTodoList(
-  projectManager.getProject(0).todos,
-  projectManager.getProject(0)
-);
-
-const ghLogo = document.querySelector("#gh-logo");
-ghLogo.src = GhLogo;
+renderWebsite(projectManager);

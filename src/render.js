@@ -3,6 +3,20 @@ import priority from "./priority";
 import Project from "./project";
 import Todo from "./todo";
 
+import GhLogo from "./img/githublogo.png";
+
+export function renderWebsite(projectManager) {
+  renderUserProjects(projectManager);
+  renderTodoList(
+    projectManager.getProject(0).todos,
+    projectManager.getProject(0)
+  );
+  createStaticEventListeners(projectManager);
+
+  const ghLogo = document.querySelector("#gh-logo");
+  ghLogo.src = GhLogo;
+}
+
 export function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
@@ -39,6 +53,11 @@ export function createStaticEventListeners(projectManager) {
 
   const closeProjectModal = document.querySelector("#close-project-modal");
   closeProjectModal.addEventListener("click", hideNewProjectModal);
+
+  const closeEditProjectModal = document.querySelector(
+    "#close-edit-project-modal"
+  );
+  closeEditProjectModal.addEventListener("click", hideEditProjectModal);
 
   const newTodo = document.querySelector("#new-todo-button");
   newTodo.addEventListener("click", showAddTodoModal);
@@ -94,6 +113,13 @@ export function renderUserProjects(projectManager) {
       renderTodoList(project.todos, project);
     });
 
+    const editProject = document.createElement("button");
+    editProject.textContent = "Edit";
+    editProject.classList.add("edit-project-button");
+    editProject.addEventListener("click", () =>
+      showEditProjectModal(project, projectManager)
+    );
+
     const deleteProject = document.createElement("button");
     deleteProject.textContent = "X";
     deleteProject.classList.add("delete-project-button");
@@ -103,9 +129,40 @@ export function renderUserProjects(projectManager) {
     });
 
     projectElement.appendChild(projectName);
+    projectElement.appendChild(editProject);
     projectElement.appendChild(deleteProject);
     userProjects.appendChild(projectElement);
   });
+}
+
+function showEditProjectModal(project, projectManager) {
+  const editProjectName = document.querySelector("#edit-project-name");
+  editProjectName.value = project.displayName;
+
+  const editProjectButtonDiv = document.querySelector(
+    "#edit-project-button-div"
+  );
+  editProjectButtonDiv.innerHTML = "";
+
+  const button = document.createElement("button");
+  button.id = "confirm-edit-project-button";
+  button.textContent = "Confirm";
+  button.addEventListener("click", () => {
+    project.displayName = editProjectName.value;
+    renderUserProjects(projectManager);
+    hideEditProjectModal();
+  });
+  editProjectButtonDiv.appendChild(button);
+
+  const editProject = document.querySelector("#edit-project-modal");
+  editProject.style.display = "block";
+}
+
+function hideEditProjectModal() {
+  const editProject = document.querySelector("#edit-project-modal");
+  const editProjectName = document.querySelector("#edit-project-name");
+  editProjectName.value = "";
+  editProject.style.display = "none";
 }
 
 export function renderTodoList(todos, project) {
