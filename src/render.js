@@ -7,12 +7,7 @@ import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderTodoList("Project View", [
-    {
-      project: projectManager.getProject(0),
-      todos: projectManager.getProject(0).todos,
-    },
-  ]);
+  renderProjectTodoList(projectManager.getProject(0));
   createStaticEventListeners(projectManager);
   createProjectModalEventListeners(projectManager);
   createTodoModalEventListeners(projectManager);
@@ -24,12 +19,7 @@ export function renderWebsite(projectManager) {
 function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
-    renderTodoList("Project View", [
-      {
-        project: projectManager.getProject(0),
-        todos: projectManager.getProject(0).todos,
-      },
-    ]);
+    renderProjectTodoList(projectManager.getProject(0));
   });
 
   const today = document.querySelector("#today");
@@ -118,12 +108,7 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderTodoList("Project View", [
-        {
-          project: project,
-          todos: project.todos,
-        },
-      ]);
+      renderProjectTodoList(project);
     });
 
     const editProject = document.createElement("button");
@@ -139,12 +124,7 @@ export function renderUserProjects(projectManager) {
     deleteProject.addEventListener("click", () => {
       projectManager.deleteProject(project);
       renderUserProjects(projectManager);
-      renderTodoList("Project View", [
-        {
-          project: projectManager.getProject(0),
-          todos: projectManager.getProject(0).todos,
-        },
-      ]);
+      renderProjectTodoList(projectManager.getProject(0));
     });
 
     projectElement.appendChild(projectName);
@@ -249,12 +229,7 @@ function renderProject(viewName, projectElement) {
       deleteTodo.textContent = "X";
       deleteTodo.addEventListener("click", (event) => {
         projectElement.project.deleteTodo(todo);
-        renderTodoList("Project View", [
-          {
-            project: projectElement.project,
-            todos: projectElement.todos,
-          },
-        ]);
+        renderProjectTodoList(projectElement.project);
         event.stopPropagation();
       });
       todoOverview.appendChild(deleteTodo);
@@ -303,12 +278,7 @@ function showEditTodoModal(todo, project) {
     todo.description = editTodoDescription.value;
     todo.dueDate = parseISO(editTodoDate.value);
     todo.priority = editTodoPriority.value;
-    renderTodoList("Project View", [
-      {
-        project: project.project,
-        todos: project.todos,
-      },
-    ]);
+    renderProjectTodoList(project.project);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);
@@ -355,15 +325,19 @@ function renderNewTodoButton(project) {
         todoPriority.value
       )
     );
-    renderTodoList("Project View", [
-      {
-        project: project,
-        todos: project.todos,
-      },
-    ]);
+    renderProjectTodoList(project);
     hideAddTodoModal();
   });
   addTodo.appendChild(button);
+}
+
+function renderProjectTodoList(project) {
+  renderTodoList("Project View", [
+    {
+      project: project,
+      todos: project.todos,
+    },
+  ]);
 }
 
 function removeChildren(parent) {
