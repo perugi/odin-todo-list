@@ -222,8 +222,9 @@ function renderProject(viewName, projectElement) {
     const check = document.createElement("input");
     check.checked = todo.completed;
     check.type = "checkbox";
-    check.addEventListener("change", () => {
+    check.addEventListener("click", (event) => {
       todo.completed = check.checked;
+      event.stopPropagation();
     });
     todoOverview.appendChild(check);
 
@@ -238,14 +239,15 @@ function renderProject(viewName, projectElement) {
     if (viewName === "Project View") {
       const editTodo = document.createElement("button");
       editTodo.textContent = "Edit";
-      editTodo.addEventListener("click", () => {
+      editTodo.addEventListener("click", (event) => {
         showEditTodoModal(todo, projectElement);
+        event.stopPropagation();
       });
       todoOverview.appendChild(editTodo);
 
       const deleteTodo = document.createElement("button");
       deleteTodo.textContent = "X";
-      deleteTodo.addEventListener("click", () => {
+      deleteTodo.addEventListener("click", (event) => {
         projectElement.project.deleteTodo(todo);
         renderTodoList("Project View", [
           {
@@ -253,6 +255,7 @@ function renderProject(viewName, projectElement) {
             todos: projectElement.todos,
           },
         ]);
+        event.stopPropagation();
       });
       todoOverview.appendChild(deleteTodo);
     }
