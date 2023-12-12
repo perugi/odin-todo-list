@@ -7,35 +7,43 @@ import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderTodoList(projectManager.getProject(0));
+  renderTodoList("Project View", [
+    {
+      project: projectManager.getProject(0),
+      todos: projectManager.getProject(0).todos,
+    },
+  ]);
   createStaticEventListeners(projectManager);
+  createProjectModalEventListeners(projectManager);
+  createTodoModalEventListeners(projectManager);
 
   const ghLogo = document.querySelector("#gh-logo");
   ghLogo.src = GhLogo;
 }
 
-export function createStaticEventListeners(projectManager) {
+function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
-    renderTodoList(projectManager.getProject(0));
+    renderTodoList("Project View", [
+      {
+        project: projectManager.getProject(0),
+        todos: projectManager.getProject(0).todos,
+      },
+    ]);
   });
 
   const today = document.querySelector("#today");
   today.addEventListener("click", () => {
-    renderTodoList({
-      todos: projectManager.getAllTodosToday(),
-      displayName: "Today",
-    });
+    renderTodoList("Today", projectManager.getAllTodosToday());
   });
 
   const thisWeek = document.querySelector("#this-week");
   thisWeek.addEventListener("click", () => {
-    renderTodoList({
-      todos: projectManager.getAllTodosThisWeek(),
-      displayName: "This Week",
-    });
+    renderTodoList("This Week", projectManager.getAllTodosThisWeek());
   });
+}
 
+function createProjectModalEventListeners(projectManager) {
   const newProject = document.querySelector("#new-project-button");
   newProject.addEventListener("click", showNewProjectModal);
 
@@ -54,15 +62,6 @@ export function createStaticEventListeners(projectManager) {
     "#close-edit-project-modal"
   );
   closeEditProjectModal.addEventListener("click", hideEditProjectModal);
-
-  const newTodo = document.querySelector("#new-todo-button");
-  newTodo.addEventListener("click", showAddTodoModal);
-
-  const closeTodoModal = document.querySelector("#close-todo-modal");
-  closeTodoModal.addEventListener("click", hideAddTodoModal);
-
-  const closeEditTodoModal = document.querySelector("#close-edit-todo-modal");
-  closeEditTodoModal.addEventListener("click", hideEditTodoModal);
 }
 
 function showNewProjectModal() {
@@ -77,6 +76,17 @@ function hideNewProjectModal() {
   newProject.style.display = "none";
 }
 
+function createTodoModalEventListeners() {
+  const newTodo = document.querySelector("#new-todo-button");
+  newTodo.addEventListener("click", showAddTodoModal);
+
+  const closeTodoModal = document.querySelector("#close-todo-modal");
+  closeTodoModal.addEventListener("click", hideAddTodoModal);
+
+  const closeEditTodoModal = document.querySelector("#close-edit-todo-modal");
+  closeEditTodoModal.addEventListener("click", hideEditTodoModal);
+}
+
 function showAddTodoModal() {
   const addTodo = document.querySelector("#add-todo-modal");
   addTodo.style.display = "block";
@@ -85,7 +95,6 @@ function showAddTodoModal() {
 function hideAddTodoModal() {
   const addTodo = document.querySelector("#add-todo-modal");
 
-  console.log("hide");
   const todoTitle = document.querySelector("#new-todo-title");
   const todoDescription = document.querySelector("#new-todo-description");
   const todoDate = document.querySelector("#new-todo-date");
@@ -109,7 +118,12 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderTodoList(project);
+      renderTodoList("Project View", [
+        {
+          project: project,
+          todos: project.todos,
+        },
+      ]);
     });
 
     const editProject = document.createElement("button");
@@ -125,6 +139,12 @@ export function renderUserProjects(projectManager) {
     deleteProject.addEventListener("click", () => {
       projectManager.deleteProject(project);
       renderUserProjects(projectManager);
+      renderTodoList("Project View", [
+        {
+          project: projectManager.getProject(0),
+          todos: projectManager.getProject(0).todos,
+        },
+      ]);
     });
 
     projectElement.appendChild(projectName);
@@ -164,15 +184,34 @@ function hideEditProjectModal() {
   editProject.style.display = "none";
 }
 
-export function renderTodoList(project) {
+export function renderTodoList(viewName, projectList) {
+  const viewNameElement = document.querySelector("#view-name");
+  viewNameElement.textContent = viewName;
+
   const todoList = document.querySelector("#todo-list");
   removeChildren(todoList);
 
+  projectList.forEach((projectElement) => {
+    renderProject(viewName, projectElement);
+  });
+
+  const newTodo = document.querySelector("#new-todo");
+  if (viewName === "Project View") {
+    newTodo.style.display = "block";
+    renderNewTodoButton(projectList[0].project);
+  } else {
+    newTodo.style.display = "none";
+  }
+}
+
+function renderProject(viewName, projectElement) {
+  const todoList = document.querySelector("#todo-list");
+
   const projectName = document.createElement("h1");
-  projectName.textContent = project.displayName;
+  projectName.textContent = projectElement.project.displayName;
   todoList.appendChild(projectName);
 
-  project.todos.forEach((todo) => {
+  projectElement.todos.forEach((todo) => {
     const todoElement = document.createElement("div");
     todoElement.classList.add("todo-element");
 
@@ -196,19 +235,24 @@ export function renderTodoList(project) {
     dueDate.textContent = format(todo.dueDate, "d.M.yyyy");
     todoOverview.appendChild(dueDate);
 
-    if (project instanceof Project) {
+    if (viewName === "Project View") {
       const editTodo = document.createElement("button");
       editTodo.textContent = "Edit";
       editTodo.addEventListener("click", () => {
-        showEditTodoModal(todo, project);
+        showEditTodoModal(todo, projectElement);
       });
       todoOverview.appendChild(editTodo);
 
       const deleteTodo = document.createElement("button");
       deleteTodo.textContent = "X";
       deleteTodo.addEventListener("click", () => {
-        project.deleteTodo(todo);
-        renderTodoList(project);
+        projectElement.project.deleteTodo(todo);
+        renderTodoList("Project View", [
+          {
+            project: projectElement.project,
+            todos: projectElement.todos,
+          },
+        ]);
       });
       todoOverview.appendChild(deleteTodo);
     }
@@ -230,14 +274,6 @@ export function renderTodoList(project) {
 
     todoList.appendChild(todoElement);
   });
-
-  const newTodo = document.querySelector("#new-todo");
-  if (project instanceof Project) {
-    newTodo.style.display = "block";
-    renderNewTodoButton(project);
-  } else {
-    newTodo.style.display = "none";
-  }
 }
 
 function showEditTodoModal(todo, project) {
@@ -264,7 +300,12 @@ function showEditTodoModal(todo, project) {
     todo.description = editTodoDescription.value;
     todo.dueDate = parseISO(editTodoDate.value);
     todo.priority = editTodoPriority.value;
-    renderTodoList(project);
+    renderTodoList("Project View", [
+      {
+        project: project.project,
+        todos: project.todos,
+      },
+    ]);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);
@@ -311,7 +352,12 @@ function renderNewTodoButton(project) {
         todoPriority.value
       )
     );
-    renderTodoList(project);
+    renderTodoList("Project View", [
+      {
+        project: project,
+        todos: project.todos,
+      },
+    ]);
     hideAddTodoModal();
   });
   addTodo.appendChild(button);

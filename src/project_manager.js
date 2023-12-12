@@ -33,16 +33,24 @@ export default class ProjectManager {
   }
 
   getAllTodosThisWeek() {
-    return this.#getAllTodos().filter((todo) =>
+    return this.#filterTodos((todo) =>
       isThisWeek(todo.dueDate, { weekStartsOn: 1 })
     );
   }
 
   getAllTodosToday() {
-    return this.#getAllTodos().filter((todo) => isToday(todo.dueDate));
+    return this.#filterTodos((todo) => isToday(todo.dueDate));
   }
 
-  #getAllTodos() {
-    return this.#projects.flatMap((project) => project.todos);
+  #filterTodos(filterFunction) {
+    let todos = [];
+    for (const project of this.#projects) {
+      let filteredTodos = project.todos.filter(filterFunction);
+
+      if (filteredTodos.length === 0) continue;
+      todos.push({ project: project, todos: filteredTodos });
+    }
+
+    return todos;
   }
 }
