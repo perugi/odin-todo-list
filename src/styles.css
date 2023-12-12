@@ -25,9 +25,37 @@ footer {
     flex-direction: row;
 }
 
-.todo-element {
+.todo-overview {
     display: flex;
     flex-direction: row;
+}
+
+.todo-element:has(.priority-LOW) {
+    color: green;
+}
+
+.todo-element:has(.priority-MEDIUM) {
+    color: orange;
+}
+
+.todo-element:has(.priority-HIGH) {
+    color: red;
+}
+
+.todo-overview[data-expanded="false"]::before {
+    content: ">";
+}
+
+.todo-overview[data-expanded="true"]::before {
+    content: "v";
+}
+
+.todo-overview[data-expanded="false"]+.todo-details {
+    display: none;
+}
+
+.todo-overview[data-expanded="false"]+.todo-details {
+    display: none;
 }
 
 #new-todo {

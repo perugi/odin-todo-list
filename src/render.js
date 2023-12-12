@@ -117,8 +117,12 @@ export function renderTodoList(todos, project) {
   todoList.appendChild(projectName);
 
   todos.forEach((todo) => {
-    const newTodo = document.createElement("div");
-    newTodo.classList.add("todo-element");
+    const todoElement = document.createElement("div");
+    todoElement.classList.add("todo-element");
+
+    const todoOverview = document.createElement("div");
+    todoOverview.classList.add("todo-overview", `priority-${todo.priority}`);
+    todoOverview.setAttribute("data-expanded", "false");
 
     const check = document.createElement("input");
     check.checked = todo.completed;
@@ -126,16 +130,40 @@ export function renderTodoList(todos, project) {
     check.addEventListener("change", () => {
       todo.completed = check.checked;
     });
-    newTodo.appendChild(check);
+    todoOverview.appendChild(check);
 
-    const todoDescription = document.createElement("div");
-    todoDescription.textContent = `${todo.title} ${todo.description} ${format(
-      todo.dueDate,
-      "d.M.yyyy"
-    )} ${todo.priority}`;
-    newTodo.appendChild(todoDescription);
+    const title = document.createElement("div");
+    title.textContent = todo.title;
+    todoOverview.appendChild(title);
 
-    todoList.appendChild(newTodo);
+    const dueDate = document.createElement("div");
+    dueDate.textContent = format(todo.dueDate, "d.M.yyyy");
+    todoOverview.appendChild(dueDate);
+
+    const deleteTodo = document.createElement("button");
+    deleteTodo.textContent = "X";
+    deleteTodo.addEventListener("click", () => {
+      project.deleteTodo(todo);
+      renderTodoList(todos, project);
+    });
+    todoOverview.appendChild(deleteTodo);
+
+    todoElement.addEventListener("click", () => {
+      todoOverview.setAttribute(
+        "data-expanded",
+        todoOverview.getAttribute("data-expanded") === "true" ? "false" : "true"
+      );
+    });
+
+    todoElement.appendChild(todoOverview);
+
+    const todoDetails = document.createElement("div");
+    todoDetails.textContent = todo.description;
+    todoDetails.classList.add("todo-details");
+
+    todoElement.appendChild(todoDetails);
+
+    todoList.appendChild(todoElement);
   });
 
   const newTodo = document.querySelector("#new-todo");
