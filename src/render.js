@@ -7,10 +7,7 @@ import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderTodoList(
-    projectManager.getProject(0).todos,
-    projectManager.getProject(0)
-  );
+  renderTodoList(projectManager.getProject(0));
   createStaticEventListeners(projectManager);
 
   const ghLogo = document.querySelector("#gh-logo");
@@ -20,22 +17,21 @@ export function renderWebsite(projectManager) {
 export function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
-    renderTodoList(
-      projectManager.getProject(0).todos,
-      projectManager.getProject(0)
-    );
+    renderTodoList(projectManager.getProject(0));
   });
 
   const today = document.querySelector("#today");
   today.addEventListener("click", () => {
-    renderTodoList(projectManager.getAllTodosToday(), {
+    renderTodoList({
+      todos: projectManager.getAllTodosToday(),
       displayName: "Today",
     });
   });
 
   const thisWeek = document.querySelector("#this-week");
   thisWeek.addEventListener("click", () => {
-    renderTodoList(projectManager.getAllTodosThisWeek(), {
+    renderTodoList({
+      todos: projectManager.getAllTodosThisWeek(),
       displayName: "This Week",
     });
   });
@@ -113,7 +109,7 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderTodoList(project.todos, project);
+      renderTodoList(project);
     });
 
     const editProject = document.createElement("button");
@@ -168,7 +164,7 @@ function hideEditProjectModal() {
   editProject.style.display = "none";
 }
 
-export function renderTodoList(todos, project) {
+export function renderTodoList(project) {
   const todoList = document.querySelector("#todo-list");
   removeChildren(todoList);
 
@@ -176,7 +172,7 @@ export function renderTodoList(todos, project) {
   projectName.textContent = project.displayName;
   todoList.appendChild(projectName);
 
-  todos.forEach((todo) => {
+  project.todos.forEach((todo) => {
     const todoElement = document.createElement("div");
     todoElement.classList.add("todo-element");
 
@@ -200,20 +196,22 @@ export function renderTodoList(todos, project) {
     dueDate.textContent = format(todo.dueDate, "d.M.yyyy");
     todoOverview.appendChild(dueDate);
 
-    const editTodo = document.createElement("button");
-    editTodo.textContent = "Edit";
-    editTodo.addEventListener("click", () => {
-      showEditTodoModal(todo, todos, project);
-    });
-    todoOverview.appendChild(editTodo);
+    if (project instanceof Project) {
+      const editTodo = document.createElement("button");
+      editTodo.textContent = "Edit";
+      editTodo.addEventListener("click", () => {
+        showEditTodoModal(todo, project);
+      });
+      todoOverview.appendChild(editTodo);
 
-    const deleteTodo = document.createElement("button");
-    deleteTodo.textContent = "X";
-    deleteTodo.addEventListener("click", () => {
-      project.deleteTodo(todo);
-      renderTodoList(todos, project);
-    });
-    todoOverview.appendChild(deleteTodo);
+      const deleteTodo = document.createElement("button");
+      deleteTodo.textContent = "X";
+      deleteTodo.addEventListener("click", () => {
+        project.deleteTodo(todo);
+        renderTodoList(project);
+      });
+      todoOverview.appendChild(deleteTodo);
+    }
 
     todoElement.addEventListener("click", () => {
       todoOverview.setAttribute(
@@ -242,7 +240,7 @@ export function renderTodoList(todos, project) {
   }
 }
 
-function showEditTodoModal(todo, todos, project) {
+function showEditTodoModal(todo, project) {
   const editTodoTitle = document.querySelector("#edit-todo-title");
   editTodoTitle.value = todo.title;
 
@@ -266,7 +264,7 @@ function showEditTodoModal(todo, todos, project) {
     todo.description = editTodoDescription.value;
     todo.dueDate = parseISO(editTodoDate.value);
     todo.priority = editTodoPriority.value;
-    renderTodoList(todos, project);
+    renderTodoList(project);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);
@@ -313,7 +311,7 @@ function renderNewTodoButton(project) {
         todoPriority.value
       )
     );
-    renderTodoList(project.todos, project);
+    renderTodoList(project);
     hideAddTodoModal();
   });
   addTodo.appendChild(button);
