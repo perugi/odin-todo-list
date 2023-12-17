@@ -2,12 +2,13 @@ import { add, format, parse, parseISO } from "date-fns";
 import priority from "./priority";
 import Project from "./project";
 import Todo from "./todo";
+import { storeProjectManager } from "./local_storage";
 
 import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderProjectTodoList(projectManager.getProject(0));
+  renderProjectTodoList(projectManager.getProject(0), projectManager);
   createStaticEventListeners(projectManager);
   createProjectModalEventListeners(projectManager);
   createTodoModalEventListeners(projectManager);
@@ -19,17 +20,21 @@ export function renderWebsite(projectManager) {
 function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
-    renderProjectTodoList(projectManager.getProject(0));
+    renderProjectTodoList(projectManager.getProject(0), projectManager);
   });
 
   const today = document.querySelector("#today");
   today.addEventListener("click", () => {
-    renderTodoList("Today", projectManager.getAllTodosToday());
+    renderTodoList("Today", projectManager.getAllTodosToday(), projectManager);
   });
 
   const thisWeek = document.querySelector("#this-week");
   thisWeek.addEventListener("click", () => {
-    renderTodoList("This Week", projectManager.getAllTodosThisWeek());
+    renderTodoList(
+      "This Week",
+      projectManager.getAllTodosThisWeek(),
+      projectManager
+    );
   });
 }
 
@@ -42,6 +47,7 @@ function createProjectModalEventListeners(projectManager) {
     const projectName = document.querySelector("#new-project-name");
     projectManager.addProject(new Project(projectName.value));
     renderUserProjects(projectManager);
+    storeProjectManager(projectManager);
     hideNewProjectModal();
   });
 
@@ -108,7 +114,7 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.displayName;
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderProjectTodoList(project);
+      renderProjectTodoList(project, projectManager);
     });
 
     const editProject = document.createElement("button");
@@ -124,7 +130,7 @@ export function renderUserProjects(projectManager) {
     deleteProject.addEventListener("click", () => {
       projectManager.deleteProject(project);
       renderUserProjects(projectManager);
-      renderProjectTodoList(projectManager.getProject(0));
+      renderProjectTodoList(projectManager.getProject(0), projectManager);
     });
 
     projectElement.appendChild(projectName);
@@ -149,6 +155,7 @@ function showEditProjectModal(project, projectManager) {
   button.addEventListener("click", () => {
     project.displayName = editProjectName.value;
     renderUserProjects(projectManager);
+    storeProjectManager(projectManager);
     hideEditProjectModal();
   });
   editProjectButtonDiv.appendChild(button);
@@ -164,7 +171,7 @@ function hideEditProjectModal() {
   editProject.style.display = "none";
 }
 
-export function renderTodoList(viewName, projectList) {
+export function renderTodoList(viewName, projectList, projectManager) {
   const viewNameElement = document.querySelector("#view-name");
   viewNameElement.textContent = viewName;
 
@@ -172,19 +179,19 @@ export function renderTodoList(viewName, projectList) {
   removeChildren(todoList);
 
   projectList.forEach((projectElement) => {
-    renderProject(viewName, projectElement);
+    renderProject(viewName, projectElement, projectManager);
   });
 
   const newTodo = document.querySelector("#new-todo");
   if (viewName === "Project View") {
     newTodo.style.display = "block";
-    renderNewTodoButton(projectList[0].project);
+    renderNewTodoButton(projectList[0].project, projectManager);
   } else {
     newTodo.style.display = "none";
   }
 }
 
-function renderProject(viewName, projectElement) {
+function renderProject(viewName, projectElement, projectManager) {
   const todoList = document.querySelector("#todo-list");
 
   const projectName = document.createElement("h1");
@@ -220,7 +227,7 @@ function renderProject(viewName, projectElement) {
       const editTodo = document.createElement("button");
       editTodo.textContent = "Edit";
       editTodo.addEventListener("click", (event) => {
-        showEditTodoModal(todo, projectElement);
+        showEditTodoModal(todo, projectElement, projectManager);
         event.stopPropagation();
       });
       todoOverview.appendChild(editTodo);
@@ -229,7 +236,7 @@ function renderProject(viewName, projectElement) {
       deleteTodo.textContent = "X";
       deleteTodo.addEventListener("click", (event) => {
         projectElement.project.deleteTodo(todo);
-        renderProjectTodoList(projectElement.project);
+        renderProjectTodoList(projectElement.project, projectManager);
         event.stopPropagation();
       });
       todoOverview.appendChild(deleteTodo);
@@ -254,7 +261,7 @@ function renderProject(viewName, projectElement) {
   });
 }
 
-function showEditTodoModal(todo, project) {
+function showEditTodoModal(todo, project, projectManager) {
   const editTodoTitle = document.querySelector("#edit-todo-title");
   editTodoTitle.value = todo.title;
 
@@ -278,7 +285,8 @@ function showEditTodoModal(todo, project) {
     todo.description = editTodoDescription.value;
     todo.dueDate = parseISO(editTodoDate.value);
     todo.priority = editTodoPriority.value;
-    renderProjectTodoList(project.project);
+    renderProjectTodoList(project.project, projectManager);
+    storeProjectManager(projectManager);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);
@@ -305,7 +313,7 @@ function hideEditTodoModal() {
   editTodo.style.display = "none";
 }
 
-function renderNewTodoButton(project) {
+function renderNewTodoButton(project, projectManager) {
   const addTodo = document.querySelector("#add-todo-button-div");
   addTodo.innerHTML = "";
 
@@ -325,19 +333,24 @@ function renderNewTodoButton(project) {
         todoPriority.value
       )
     );
-    renderProjectTodoList(project);
+    renderProjectTodoList(project, projectManager);
+    storeProjectManager(projectManager);
     hideAddTodoModal();
   });
   addTodo.appendChild(button);
 }
 
-function renderProjectTodoList(project) {
-  renderTodoList("Project View", [
-    {
-      project: project,
-      todos: project.todos,
-    },
-  ]);
+function renderProjectTodoList(project, projectManager) {
+  renderTodoList(
+    "Project View",
+    [
+      {
+        project: project,
+        todos: project.todos,
+      },
+    ],
+    projectManager
+  );
 }
 
 function removeChildren(parent) {
