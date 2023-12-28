@@ -1,33 +1,37 @@
 export default class Project {
-  #displayName;
-  #todos;
+  displayName;
+  todos;
 
   constructor(displayName) {
-    this.#displayName = displayName;
-    this.#todos = [];
+    this.displayName = displayName;
+    this.todos = [];
   }
 
-  set displayName(displayName) {
-    this.#displayName = displayName;
+  setDisplayName(displayName) {
+    this.displayName = displayName;
   }
 
-  get displayName() {
-    return this.#displayName;
+  getDisplayName() {
+    return this.displayName;
   }
 
-  get todos() {
-    return this.#todos;
+  setTodos(todos) {
+    this.todos = todos;
+  }
+
+  getTodos() {
+    return this.todos;
   }
 
   addTodo(todo) {
-    if (this.#todos.includes(todo)) return;
+    if (this.todos.includes(todo)) return;
 
-    this.#todos.push(todo);
+    this.todos.push(todo);
   }
 
   deleteTodo(todo) {
-    if (!this.#todos.includes(todo)) return;
+    if (!this.todos.includes(todo)) return;
 
-    this.#todos.splice(this.#todos.indexOf(todo), 1);
+    this.todos.splice(this.todos.indexOf(todo), 1);
   }
 }

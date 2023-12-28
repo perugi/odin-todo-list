@@ -1,30 +1,32 @@
 import ProjectManager from "./project_manager";
+import Project from "./project";
+import Todo from "./todo";
 
-export function retrieveProjectManager() {
-  console.log("retrieve from local storage");
-  console.log(localStorage.getItem("projectManager"));
-  return new ProjectManager();
-}
+export default class Storage {
+  static saveProjectManager(projectManager) {
+    localStorage.setItem("projectManager", JSON.stringify(projectManager));
+  }
 
-export function storeProjectManager(projectManager) {
-  // console.log("Store to local storage");
-  // let projectManagerForStorage = {};
-  // projectManager.getAllProjects().forEach((project) => {
-  //   projectManagerForStorage[project.displayName] = {
-  //     todos: [],
-  //     displayName: project.displayName,
-  //   };
-  //   project.todos.forEach((todo) => {
-  //     projectManagerForStorage[project.displayName].todos.push(
-  //       JSON.stringify(todo)
-  //     );
-  //   });
-  // });
-  // console.log(projectManagerForStorage);
-  // localStorage.setItem(
-  //   "projectManager",
-  //   JSON.stringify(projectManagerForStorage)
-  // );
+  static getProjectManager() {
+    const projectManager = Object.assign(
+      new ProjectManager(),
+      JSON.parse(localStorage.getItem("projectManager"))
+    );
 
-  console.log(JSON.stringify(projectManager));
+    projectManager.setProjects(
+      projectManager
+        .getProjects()
+        .map((project) => Object.assign(new Project(), project))
+    );
+
+    projectManager
+      .getProjects()
+      .forEach((project) =>
+        project.setTodos(
+          project.getTodos().map((todo) => Object.assign(new Todo(), todo))
+        )
+      );
+
+    return projectManager;
+  }
 }

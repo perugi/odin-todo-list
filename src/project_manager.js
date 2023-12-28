@@ -2,34 +2,42 @@ import Project from "./project";
 import { isThisWeek, isToday } from "date-fns";
 
 export default class ProjectManager {
-  #projects;
+  projects;
 
   constructor() {
-    this.#projects = [new Project("Inbox")];
+    this.projects = [new Project("Inbox")];
+  }
+
+  setProjects(projects) {
+    this.projects = projects;
+  }
+
+  getProjects() {
+    return this.projects;
   }
 
   getProject(index) {
-    return this.#projects[index];
+    return this.projects[index];
   }
 
   getUserProjects() {
-    return [...this.#projects.slice(1)];
+    return [...this.projects.slice(1)];
   }
 
   addProject(project) {
-    if (this.#projects.includes(project)) return;
+    if (this.projects.includes(project)) return;
 
-    this.#projects.push(project);
+    this.projects.push(project);
   }
 
   deleteProject(project) {
     if (
-      !this.#projects.includes(project) ||
-      this.#projects.indexOf(project) === 0
+      !this.projects.includes(project) ||
+      this.projects.indexOf(project) === 0
     )
       return;
 
-    this.#projects.splice(this.#projects.indexOf(project), 1);
+    this.projects.splice(this.projects.indexOf(project), 1);
   }
 
   getAllTodosThisWeek() {
@@ -44,8 +52,8 @@ export default class ProjectManager {
 
   #filterTodos(filterFunction) {
     let todos = [];
-    for (const project of this.#projects) {
-      let filteredTodos = project.todos.filter(filterFunction);
+    for (const project of this.projects) {
+      let filteredTodos = project.getTodos().filter(filterFunction);
 
       if (filteredTodos.length === 0) continue;
       todos.push({ project: project, todos: filteredTodos });

@@ -1,7 +1,7 @@
 import { add, format, parse, parseISO } from "date-fns";
-import priority from "./priority";
 import Project from "./project";
 import Todo from "./todo";
+import Storage from "./local_storage";
 
 import GhLogo from "./img/githublogo.png";
 
@@ -41,6 +41,7 @@ function createProjectModalEventListeners(projectManager) {
   createProject.addEventListener("click", () => {
     const projectName = document.querySelector("#new-project-name");
     projectManager.addProject(new Project(projectName.value));
+    Storage.saveProjectManager(projectManager);
     renderUserProjects(projectManager);
     hideNewProjectModal();
   });
@@ -105,7 +106,7 @@ export function renderUserProjects(projectManager) {
     projectElement.classList.add("project-element");
 
     const projectName = document.createElement("div");
-    projectName.textContent = project.displayName;
+    projectName.textContent = project.getDisplayName();
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
       renderProjectTodoList(project);
@@ -136,7 +137,7 @@ export function renderUserProjects(projectManager) {
 
 function showEditProjectModal(project, projectManager) {
   const editProjectName = document.querySelector("#edit-project-name");
-  editProjectName.value = project.displayName;
+  editProjectName.value = project.getDisplayName();
 
   const editProjectButtonDiv = document.querySelector(
     "#edit-project-button-div"
@@ -147,7 +148,7 @@ function showEditProjectModal(project, projectManager) {
   button.id = "confirm-edit-project-button";
   button.textContent = "Confirm";
   button.addEventListener("click", () => {
-    project.displayName = editProjectName.value;
+    project.setDisplayName(editProjectName.value);
     renderUserProjects(projectManager);
     hideEditProjectModal();
   });
@@ -188,7 +189,7 @@ function renderProject(viewName, projectElement) {
   const todoList = document.querySelector("#todo-list");
 
   const projectName = document.createElement("h1");
-  projectName.textContent = projectElement.project.displayName;
+  projectName.textContent = projectElement.project.getDisplayName();
   todoList.appendChild(projectName);
 
   projectElement.todos.forEach((todo) => {
@@ -196,24 +197,27 @@ function renderProject(viewName, projectElement) {
     todoElement.classList.add("todo-element");
 
     const todoOverview = document.createElement("div");
-    todoOverview.classList.add("todo-overview", `priority-${todo.priority}`);
+    todoOverview.classList.add(
+      "todo-overview",
+      `priority-${todo.getPriority()}`
+    );
     todoOverview.setAttribute("data-expanded", "false");
 
     const check = document.createElement("input");
-    check.checked = todo.completed;
+    check.checked = todo.getCompleted();
     check.type = "checkbox";
     check.addEventListener("click", (event) => {
-      todo.completed = check.checked;
+      todo.setCompleted(check.checked);
       event.stopPropagation();
     });
     todoOverview.appendChild(check);
 
     const title = document.createElement("div");
-    title.textContent = todo.title;
+    title.textContent = todo.getTitle();
     todoOverview.appendChild(title);
 
     const dueDate = document.createElement("div");
-    dueDate.textContent = format(todo.dueDate, "d.M.yyyy");
+    dueDate.textContent = format(todo.getDueDate(), "d.M.yyyy");
     todoOverview.appendChild(dueDate);
 
     if (viewName === "Project View") {
@@ -245,7 +249,7 @@ function renderProject(viewName, projectElement) {
     todoElement.appendChild(todoOverview);
 
     const todoDetails = document.createElement("div");
-    todoDetails.textContent = todo.description;
+    todoDetails.textContent = todo.getDescription();
     todoDetails.classList.add("todo-details");
 
     todoElement.appendChild(todoDetails);
@@ -256,16 +260,16 @@ function renderProject(viewName, projectElement) {
 
 function showEditTodoModal(todo, project) {
   const editTodoTitle = document.querySelector("#edit-todo-title");
-  editTodoTitle.value = todo.title;
+  editTodoTitle.value = todo.getTitle();
 
   const editTodoDescription = document.querySelector("#edit-todo-description");
-  editTodoDescription.value = todo.description;
+  editTodoDescription.value = todo.getDescription();
 
   const editTodoDate = document.querySelector("#edit-todo-date");
-  editTodoDate.value = format(todo.dueDate, "yyyy-MM-dd");
+  editTodoDate.value = format(todo.getDueDate(), "yyyy-MM-dd");
 
   const editTodoPriority = document.querySelector("#edit-todo-priority");
-  editTodoPriority.value = todo.priority;
+  editTodoPriority.value = todo.getPriority();
 
   const editTodoButtonDiv = document.querySelector("#edit-todo-button-div");
   editTodoButtonDiv.innerHTML = "";
@@ -274,10 +278,10 @@ function showEditTodoModal(todo, project) {
   button.id = "confirm-edit-todo-button";
   button.textContent = "Confirm";
   button.addEventListener("click", () => {
-    todo.title = editTodoTitle.value;
-    todo.description = editTodoDescription.value;
-    todo.dueDate = parseISO(editTodoDate.value);
-    todo.priority = editTodoPriority.value;
+    todo.setTitle(editTodoTitle.value);
+    todo.setDescription(editTodoDescription.value);
+    todo.setDueDate(parseISO(editTodoDate.value));
+    todo.setPriority(editTodoPriority.value);
     renderProjectTodoList(project.project);
     hideEditTodoModal();
   });
