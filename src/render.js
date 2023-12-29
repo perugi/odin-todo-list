@@ -168,6 +168,11 @@ function hideEditProjectModal() {
 }
 
 export function renderTodoList(viewName, projectList) {
+  // TODO: Split this into rendering of the week/day view and project view.
+  // In the project view, add the new TODO button and add the project index into the HTML.
+  // Read it when needed to update the projectManager in the local storage.
+  // Share the renderProject function between the week/day and project views.
+
   const viewNameElement = document.querySelector("#view-name");
   viewNameElement.textContent = viewName;
 
