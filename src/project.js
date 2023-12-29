@@ -23,6 +23,14 @@ export default class Project {
     return this.todos;
   }
 
+  getTodo(index) {
+    return this.todos[index];
+  }
+
+  getTodoIndex(todo) {
+    return this.todos.indexOf(todo);
+  }
+
   addTodo(todo) {
     if (this.todos.includes(todo)) return;
 

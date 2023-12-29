@@ -52,4 +52,12 @@ export default class Todo {
   getCompleted() {
     return this.completed;
   }
+
+  editTodo(editedTodo) {
+    this.setTitle(editedTodo.getTitle);
+    this.setDescription(editedTodo.getDescription);
+    this.setDueDate(editedTodo.getDueDate);
+    this.setPriority(editedTodo.getPriority);
+    this.setCompleted(editedTodo.getCompleted);
+  }
 }

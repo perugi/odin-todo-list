@@ -1,4 +1,4 @@
-import { add, format, parse, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Project from "./project";
 import Todo from "./todo";
 import Storage from "./local_storage";
@@ -40,8 +40,9 @@ function createProjectModalEventListeners(projectManager) {
   const createProject = document.querySelector("#create-project-button");
   createProject.addEventListener("click", () => {
     const projectName = document.querySelector("#new-project-name");
-    projectManager.addProject(new Project(projectName.value));
-    Storage.saveProjectManager(projectManager);
+    const newProject = new Project(projectName.value);
+    projectManager.addProject(newProject);
+    Storage.addProject(newProject);
     renderUserProjects(projectManager);
     hideNewProjectModal();
   });
@@ -149,6 +150,7 @@ function showEditProjectModal(project, projectManager) {
   button.textContent = "Confirm";
   button.addEventListener("click", () => {
     project.setDisplayName(editProjectName.value);
+    Storage.editProject(project, editProjectName.value);
     renderUserProjects(projectManager);
     hideEditProjectModal();
   });
@@ -259,6 +261,9 @@ function renderProject(viewName, projectElement) {
 }
 
 function showEditTodoModal(todo, project) {
+  const editTodoCompleted = document.querySelector("#edit-todo-completed");
+  editTodoCompleted.checked = todo.getCompleted();
+
   const editTodoTitle = document.querySelector("#edit-todo-title");
   editTodoTitle.value = todo.getTitle();
 
@@ -278,10 +283,18 @@ function showEditTodoModal(todo, project) {
   button.id = "confirm-edit-todo-button";
   button.textContent = "Confirm";
   button.addEventListener("click", () => {
-    todo.setTitle(editTodoTitle.value);
-    todo.setDescription(editTodoDescription.value);
-    todo.setDueDate(parseISO(editTodoDate.value));
-    todo.setPriority(editTodoPriority.value);
+    const editedTodo = new Todo(
+      editTodoTitle.value,
+      editTodoDescription.value,
+      parseISO(editTodoDate.value),
+      editTodoPriority.value
+    );
+    editedTodo.setCompleted(editTodoCompleted.checked);
+
+    todo.editTodo(editedTodo);
+    //TODO
+    Storage.editTodo(, project.getTodoIndex(todo), editedTodo);
+
     renderProjectTodoList(project.project);
     hideEditTodoModal();
   });
@@ -321,14 +334,17 @@ function renderNewTodoButton(project) {
     const todoDescription = document.querySelector("#new-todo-description");
     const todoDate = document.querySelector("#new-todo-date");
     const todoPriority = document.querySelector("#new-todo-priority");
-    project.addTodo(
-      new Todo(
-        todoTitle.value,
-        todoDescription.value,
-        parseISO(todoDate.value),
-        todoPriority.value
-      )
+
+    const newTodo = new Todo(
+      todoTitle.value,
+      todoDescription.value,
+      parseISO(todoDate.value),
+      todoPriority.value
     );
+    project.addTodo(newTodo);
+    //TODO
+    Storage.addTodo(project, newTodo);
+
     renderProjectTodoList(project);
     hideAddTodoModal();
   });
