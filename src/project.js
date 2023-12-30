@@ -37,9 +37,9 @@ export default class Project {
     this.todos.push(todo);
   }
 
-  deleteTodo(todo) {
-    if (!this.todos.includes(todo)) return;
+  deleteTodo(index) {
+    if (index < 0 || index > this.todos.length) return;
 
-    this.todos.splice(this.todos.indexOf(todo), 1);
+    this.todos.splice(index, 1);
   }
 }

@@ -7,7 +7,7 @@ import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderProject(projectManager.getProject(0), true);
+  renderProjectView(0, projectManager.getProject(0));
   renderNewTodoButton(projectManager.getProject(0));
   createStaticEventListeners(projectManager);
   createProjectModalEventListeners(projectManager);
@@ -233,6 +233,7 @@ function renderProject(project, isProjectView) {
     check.type = "checkbox";
     check.addEventListener("click", (event) => {
       todo.setCompleted(check.checked);
+      // TODO add update to storage
       event.stopPropagation();
     });
     todoOverview.appendChild(check);
@@ -257,9 +258,13 @@ function renderProject(project, isProjectView) {
       const deleteTodo = document.createElement("button");
       deleteTodo.textContent = "X";
       deleteTodo.addEventListener("click", (event) => {
-        project.deleteTodo(todo);
-        // TODO delete from local storage
-        renderProject(project, isProjectView);
+        const todoIndex = project.getTodoIndex(todo);
+        project.deleteTodo(todoIndex);
+
+        const projectIndexElement = document.querySelector("#project-index");
+        Storage.deleteTodo(projectIndexElement.dataset.index, todoIndex);
+
+        renderProjectView(projectIndexElement.dataset.index, project);
         event.stopPropagation();
       });
       todoOverview.appendChild(deleteTodo);
@@ -367,11 +372,8 @@ function renderNewTodoButton(project) {
       todoPriority.value
     );
     project.addTodo(newTodo);
-    console.log(project);
 
     const projectIndexElement = document.querySelector("#project-index");
-    console.log(projectIndexElement);
-    console.log(projectIndexElement.dataset.index);
     Storage.addTodo(projectIndexElement.dataset.index, newTodo);
 
     renderProjectView(projectIndexElement.dataset.index, project);
