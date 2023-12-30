@@ -34,14 +34,10 @@ export default class ProjectManager {
     this.projects.push(project);
   }
 
-  deleteProject(project) {
-    if (
-      !this.projects.includes(project) ||
-      this.projects.indexOf(project) === 0
-    )
-      return;
+  deleteProject(projectIndex) {
+    if (projectIndex > this.projects.length || projectIndex === 0) return;
 
-    this.projects.splice(this.projects.indexOf(project), 1);
+    this.projects.splice(projectIndex, 1);
   }
 
   getAllTodosThisWeek() {
@@ -55,14 +51,16 @@ export default class ProjectManager {
   }
 
   #filterTodos(filterFunction) {
-    let todos = [];
+    let filteredProjects = [];
     for (const project of this.projects) {
       let filteredTodos = project.getTodos().filter(filterFunction);
 
       if (filteredTodos.length === 0) continue;
-      todos.push({ project: project, todos: filteredTodos });
+      const filteredProject = new Project(project.getDisplayName());
+      filteredProject.setTodos(filteredTodos);
+      filteredProjects.push(filteredProject);
     }
 
-    return todos;
+    return filteredProjects;
   }
 }

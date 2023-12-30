@@ -1,3 +1,5 @@
+import { formatISO, parseISO } from "date-fns";
+
 export default class Todo {
   title;
   description;
@@ -30,11 +32,11 @@ export default class Todo {
   }
 
   setDueDate(dueDate) {
-    this.dueDate = dueDate;
+    this.dueDate = formatISO(dueDate);
   }
 
   getDueDate() {
-    return this.dueDate;
+    return parseISO(this.dueDate);
   }
 
   setPriority(priority) {

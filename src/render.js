@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format, parse, parseISO } from "date-fns";
 import Project from "./project";
 import Todo from "./todo";
 import Storage from "./local_storage";
@@ -7,7 +7,8 @@ import GhLogo from "./img/githublogo.png";
 
 export function renderWebsite(projectManager) {
   renderUserProjects(projectManager);
-  renderProjectTodoList(projectManager.getProject(0));
+  renderProject(projectManager.getProject(0), true);
+  renderNewTodoButton(projectManager.getProject(0));
   createStaticEventListeners(projectManager);
   createProjectModalEventListeners(projectManager);
   createTodoModalEventListeners(projectManager);
@@ -19,17 +20,17 @@ export function renderWebsite(projectManager) {
 function createStaticEventListeners(projectManager) {
   const inbox = document.querySelector("#inbox");
   inbox.addEventListener("click", () => {
-    renderProjectTodoList(projectManager.getProject(0));
+    renderProjectView(0, projectManager.getProject(0));
   });
 
   const today = document.querySelector("#today");
   today.addEventListener("click", () => {
-    renderTodoList("Today", projectManager.getAllTodosToday());
+    renderNonProjectView("Today", projectManager.getAllTodosToday());
   });
 
   const thisWeek = document.querySelector("#this-week");
   thisWeek.addEventListener("click", () => {
-    renderTodoList("This Week", projectManager.getAllTodosThisWeek());
+    renderNonProjectView("This Week", projectManager.getAllTodosThisWeek());
   });
 }
 
@@ -110,7 +111,7 @@ export function renderUserProjects(projectManager) {
     projectName.textContent = project.getDisplayName();
     projectName.classList.add("project-name");
     projectName.addEventListener("click", () => {
-      renderProjectTodoList(project);
+      renderProjectView(projectManager.getProjectIndex(project), project);
     });
 
     const editProject = document.createElement("button");
@@ -124,9 +125,11 @@ export function renderUserProjects(projectManager) {
     deleteProject.textContent = "X";
     deleteProject.classList.add("delete-project-button");
     deleteProject.addEventListener("click", () => {
-      projectManager.deleteProject(project);
+      const projectIndex = projectManager.getProjectIndex(project);
+      projectManager.deleteProject(projectIndex);
+      Storage.deleteProject(projectIndex);
       renderUserProjects(projectManager);
-      renderProjectTodoList(projectManager.getProject(0));
+      renderProjectView(0, projectManager.getProject(0));
     });
 
     projectElement.appendChild(projectName);
@@ -150,7 +153,10 @@ function showEditProjectModal(project, projectManager) {
   button.textContent = "Confirm";
   button.addEventListener("click", () => {
     project.setDisplayName(editProjectName.value);
-    Storage.editProject(project, editProjectName.value);
+    Storage.editProject(
+      projectManager.getProjectIndex(project),
+      editProjectName.value
+    );
     renderUserProjects(projectManager);
     hideEditProjectModal();
   });
@@ -167,39 +173,51 @@ function hideEditProjectModal() {
   editProject.style.display = "none";
 }
 
-export function renderTodoList(viewName, projectList) {
-  // TODO: Split this into rendering of the week/day view and project view.
-  // In the project view, add the new TODO button and add the project index into the HTML.
-  // Read it when needed to update the projectManager in the local storage.
-  // Share the renderProject function between the week/day and project views.
+function renderProjectView(projectIndex, project) {
+  const viewNameElement = document.querySelector("#view-name");
+  viewNameElement.textContent = "Project View";
+
+  const projectIndexElement = document.querySelector("#project-index");
+  projectIndexElement.setAttribute("data-index", projectIndex);
+
+  const todoList = document.querySelector("#todo-list");
+  removeChildren(todoList);
+
+  renderProject(project, true);
+
+  const newTodo = document.querySelector("#new-todo");
+  renderNewTodoButton(project);
+  newTodo.style.display = "block";
+}
+
+export function renderNonProjectView(viewName, projectList) {
+  // TODO fix the rendering of the view, maybe bug in how the filtering in ProjectManager works.
 
   const viewNameElement = document.querySelector("#view-name");
   viewNameElement.textContent = viewName;
+
+  const projectIndex = document.querySelector("#project-index");
+  projectIndex.setAttribute("data-index", "");
 
   const todoList = document.querySelector("#todo-list");
   removeChildren(todoList);
 
   projectList.forEach((projectElement) => {
-    renderProject(viewName, projectElement);
+    renderProject(projectElement, false);
   });
 
   const newTodo = document.querySelector("#new-todo");
-  if (viewName === "Project View") {
-    newTodo.style.display = "block";
-    renderNewTodoButton(projectList[0].project);
-  } else {
-    newTodo.style.display = "none";
-  }
+  newTodo.style.display = "none";
 }
 
-function renderProject(viewName, projectElement) {
+function renderProject(project, isProjectView) {
   const todoList = document.querySelector("#todo-list");
 
   const projectName = document.createElement("h1");
-  projectName.textContent = projectElement.project.getDisplayName();
+  projectName.textContent = project.getDisplayName();
   todoList.appendChild(projectName);
 
-  projectElement.todos.forEach((todo) => {
+  project.todos.forEach((todo) => {
     const todoElement = document.createElement("div");
     todoElement.classList.add("todo-element");
 
@@ -227,11 +245,11 @@ function renderProject(viewName, projectElement) {
     dueDate.textContent = format(todo.getDueDate(), "d.M.yyyy");
     todoOverview.appendChild(dueDate);
 
-    if (viewName === "Project View") {
+    if (isProjectView) {
       const editTodo = document.createElement("button");
       editTodo.textContent = "Edit";
       editTodo.addEventListener("click", (event) => {
-        showEditTodoModal(todo, projectElement);
+        showEditTodoModal(todo, project);
         event.stopPropagation();
       });
       todoOverview.appendChild(editTodo);
@@ -239,8 +257,9 @@ function renderProject(viewName, projectElement) {
       const deleteTodo = document.createElement("button");
       deleteTodo.textContent = "X";
       deleteTodo.addEventListener("click", (event) => {
-        projectElement.project.deleteTodo(todo);
-        renderProjectTodoList(projectElement.project);
+        project.deleteTodo(todo);
+        // TODO delete from local storage
+        renderProject(project, isProjectView);
         event.stopPropagation();
       });
       todoOverview.appendChild(deleteTodo);
@@ -291,16 +310,16 @@ function showEditTodoModal(todo, project) {
     const editedTodo = new Todo(
       editTodoTitle.value,
       editTodoDescription.value,
-      parseISO(editTodoDate.value),
+      editTodoDate.value,
       editTodoPriority.value
     );
     editedTodo.setCompleted(editTodoCompleted.checked);
 
     todo.editTodo(editedTodo);
-    //TODO
-    Storage.editTodo(, project.getTodoIndex(todo), editedTodo);
+    // TODO edit todo in local storage
+    // Storage.editTodo(, project.getTodoIndex(todo), editedTodo);
 
-    renderProjectTodoList(project.project);
+    renderProject(project, true);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);
@@ -335,6 +354,7 @@ function renderNewTodoButton(project) {
   button.id = "add-todo-button";
   button.textContent = "Add Todo";
   button.addEventListener("click", () => {
+    console.log("click");
     const todoTitle = document.querySelector("#new-todo-title");
     const todoDescription = document.querySelector("#new-todo-description");
     const todoDate = document.querySelector("#new-todo-date");
@@ -343,26 +363,21 @@ function renderNewTodoButton(project) {
     const newTodo = new Todo(
       todoTitle.value,
       todoDescription.value,
-      parseISO(todoDate.value),
+      todoDate.value,
       todoPriority.value
     );
     project.addTodo(newTodo);
-    //TODO
-    Storage.addTodo(project, newTodo);
+    console.log(project);
 
-    renderProjectTodoList(project);
+    const projectIndexElement = document.querySelector("#project-index");
+    console.log(projectIndexElement);
+    console.log(projectIndexElement.dataset.index);
+    Storage.addTodo(projectIndexElement.dataset.index, newTodo);
+
+    renderProjectView(projectIndexElement.dataset.index, project);
     hideAddTodoModal();
   });
   addTodo.appendChild(button);
-}
-
-function renderProjectTodoList(project) {
-  renderTodoList("Project View", [
-    {
-      project: project,
-      todos: project.todos,
-    },
-  ]);
 }
 
 function removeChildren(parent) {

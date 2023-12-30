@@ -27,6 +27,8 @@ export default class Storage {
         )
       );
 
+    console.log(projectManager);
+
     return projectManager;
   }
 
@@ -36,9 +38,9 @@ export default class Storage {
     Storage.saveProjectManager(projectManager);
   }
 
-  static deleteProject(project) {
+  static deleteProject(projectIndex) {
     const projectManager = Storage.getProjectManager();
-    projectManager.deleteProject(project);
+    projectManager.deleteProject(projectIndex);
     Storage.saveProjectManager(projectManager);
   }
 
@@ -50,6 +52,7 @@ export default class Storage {
 
   static addTodo(projectIndex, todo) {
     const projectManager = Storage.getProjectManager();
+    console.log(projectIndex);
     projectManager.getProject(projectIndex).addTodo(todo);
     Storage.saveProjectManager(projectManager);
   }
