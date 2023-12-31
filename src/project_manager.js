@@ -53,11 +53,19 @@ export default class ProjectManager {
   filterTodos(filterFunction) {
     let filteredProjects = {};
     for (const project of this.projects) {
-      let filteredTodos = project.getTodos().filter(filterFunction);
+      let filteredProject = {};
 
-      if (filteredTodos.length === 0) continue;
-      const filteredProject = new Project(project.getDisplayName());
-      filteredProject.setTodos(filteredTodos);
+      filteredProject["displayName"] = project.getDisplayName();
+      filteredProject["originalProject"] = project;
+
+      project
+        .getTodos()
+        .filter(filterFunction)
+        .forEach((todo) => {
+          filteredProject[project.getTodoIndex(todo)] = todo;
+        });
+
+      if (Object.keys(filteredProject).length === 2) continue;
       filteredProjects[this.getProjectIndex(project)] = filteredProject;
     }
 

@@ -246,7 +246,19 @@ function hideEditProjectModal() {
 }
 
 function renderProjectView(projectIndex, project) {
-  renderView("Project View", { [projectIndex]: project });
+  // Prepare project for rendering (turn into an object with project indexes for keys
+  // and with the todos as an object with todo indexes for keys.
+
+  let projectForRendering = {};
+
+  projectForRendering["displayName"] = project.getDisplayName();
+  projectForRendering["originalProject"] = project;
+
+  project.getTodos().forEach((todo) => {
+    projectForRendering[project.getTodoIndex(todo)] = todo;
+  });
+
+  renderView("Project View", { [projectIndex]: projectForRendering });
 }
 
 function renderView(viewName, projectList) {
@@ -275,12 +287,17 @@ function renderView(viewName, projectList) {
   }
 }
 
-function renderProject(projectElement, project, projectIndex) {
+function renderProject(projectElement, projectObject, projectIndex) {
   const projectName = document.createElement("h1");
-  projectName.textContent = project.getDisplayName();
+  projectName.textContent = projectObject.displayName;
   projectElement.appendChild(projectName);
 
-  project.todos.forEach((todo) => {
+  for (let todoIndex in projectObject) {
+    if (todoIndex === "displayName" || todoIndex === "originalProject")
+      continue;
+
+    const todo = projectObject[todoIndex];
+
     const todoElement = document.createElement("div");
     todoElement.classList.add("todo-element");
 
@@ -318,7 +335,6 @@ function renderProject(projectElement, project, projectIndex) {
     const editTodo = document.createElement("button");
     editTodo.textContent = "Edit";
     editTodo.addEventListener("click", (event) => {
-      // TODO
       showEditTodoModal(projectIndex, todoIndex, todo);
       event.stopPropagation();
     });
@@ -327,14 +343,23 @@ function renderProject(projectElement, project, projectIndex) {
     const deleteTodo = document.createElement("button");
     deleteTodo.textContent = "X";
     deleteTodo.addEventListener("click", (event) => {
-      const todoIndex = project.getTodoIndex(todo);
-      project.deleteTodo(todoIndex);
+      projectObject["originalProject"].deleteTodo(todoIndex);
+      Storage.deleteTodo(projectIndex, todoIndex);
 
-      // TODO
-      const projectIndexElement = document.querySelector("#project-index");
-      Storage.deleteTodo(projectIndexElement.dataset.index, todoIndex);
+      const projectManager = Storage.getProjectManager();
 
-      renderProjectView(projectIndexElement.dataset.index, project);
+      const viewName = document.querySelector("#view-name");
+      if (viewName.textContent === "Today") {
+        renderView("Today", projectManager.getAllTodosToday());
+      } else if (viewName.textContent === "This Week") {
+        renderView("This Week", projectManager.getAllTodosThisWeek());
+      } else {
+        renderProjectView(
+          projectIndex,
+          projectManager.getProject(projectIndex)
+        );
+      }
+
       event.stopPropagation();
     });
     todoOverview.appendChild(deleteTodo);
@@ -355,7 +380,7 @@ function renderProject(projectElement, project, projectIndex) {
     todoElement.appendChild(todoDetails);
 
     projectElement.appendChild(todoElement);
-  });
+  }
 }
 
 function showEditTodoModal(projectIndex, todoIndex, todo) {
