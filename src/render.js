@@ -233,7 +233,13 @@ function renderProject(project, isProjectView) {
     check.type = "checkbox";
     check.addEventListener("click", (event) => {
       todo.setCompleted(check.checked);
-      // TODO add update to storage
+      const projectIndexElement = document.querySelector("#project-index");
+      Storage.setCompleted(
+        projectIndexElement.dataset.index,
+        project.getTodoIndex(todo),
+        check.checked
+      );
+
       event.stopPropagation();
     });
     todoOverview.appendChild(check);
@@ -319,12 +325,17 @@ function showEditTodoModal(todo, project) {
       editTodoPriority.value
     );
     editedTodo.setCompleted(editTodoCompleted.checked);
+    console.log(editedTodo);
 
+    const projectIndexElement = document.querySelector("#project-index");
     todo.editTodo(editedTodo);
-    // TODO edit todo in local storage
-    // Storage.editTodo(, project.getTodoIndex(todo), editedTodo);
+    Storage.editTodo(
+      projectIndexElement.dataset.index,
+      project.getTodoIndex(todo),
+      editedTodo
+    );
 
-    renderProject(project, true);
+    renderProjectView(projectIndexElement.dataset.index, project);
     hideEditTodoModal();
   });
   editTodoButtonDiv.appendChild(button);

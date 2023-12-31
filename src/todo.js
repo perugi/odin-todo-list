@@ -56,10 +56,10 @@ export default class Todo {
   }
 
   editTodo(editedTodo) {
-    this.setTitle(editedTodo.getTitle);
-    this.setDescription(editedTodo.getDescription);
-    this.setDueDate(editedTodo.getDueDate);
-    this.setPriority(editedTodo.getPriority);
-    this.setCompleted(editedTodo.getCompleted);
+    this.setTitle(editedTodo.getTitle());
+    this.setDescription(editedTodo.getDescription());
+    this.setDueDate(editedTodo.getDueDate());
+    this.setPriority(editedTodo.getPriority());
+    this.setCompleted(editedTodo.getCompleted());
   }
 }

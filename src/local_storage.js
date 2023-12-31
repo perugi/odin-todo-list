@@ -73,4 +73,14 @@ export default class Storage {
 
     Storage.saveProjectManager(projectManager);
   }
+
+  static setCompleted(projectIndex, todoIndex, completed) {
+    const projectManager = Storage.getProjectManager();
+    projectManager
+      .getProject(projectIndex)
+      .getTodo(todoIndex)
+      .setCompleted(completed);
+
+    Storage.saveProjectManager(projectManager);
+  }
 }
