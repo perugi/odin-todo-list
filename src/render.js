@@ -99,7 +99,7 @@ function hideAddTodoModal() {
   addTodo.style.display = "none";
 }
 
-export function renderUserProjects(projectManager) {
+function renderUserProjects(projectManager) {
   const userProjects = document.querySelector("#user-projects");
   removeChildren(userProjects);
 
@@ -190,8 +190,8 @@ function renderProjectView(projectIndex, project) {
   newTodo.style.display = "block";
 }
 
-export function renderNonProjectView(viewName, projectList) {
-  // TODO fix the rendering of the view, maybe bug in how the filtering in ProjectManager works.
+function renderNonProjectView(viewName, projectList) {
+  console.log(projectList);
 
   const viewNameElement = document.querySelector("#view-name");
   viewNameElement.textContent = viewName;
