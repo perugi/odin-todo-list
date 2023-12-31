@@ -330,6 +330,7 @@ function renderProject(projectElement, project, projectIndex) {
       const todoIndex = project.getTodoIndex(todo);
       project.deleteTodo(todoIndex);
 
+      // TODO
       const projectIndexElement = document.querySelector("#project-index");
       Storage.deleteTodo(projectIndexElement.dataset.index, todoIndex);
 
