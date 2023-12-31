@@ -53,16 +53,15 @@
                     <option value="HIGH">High</option>
                 </select>
             </div>
-            <div id="add-todo-button-div">
-                <input type="button" value="Add Todo" id="add-todo-button">
-            </div>
+            <input type="button" value="Add Todo" id="confirm-add-todo-button" data-project-index="">
         </div>
     </div>
     <div id="edit-todo-modal">
         <div class="modal-content">
             <div>Edit Todo</div>
             <div id="close-edit-todo-modal" class="close-modal">&times;</div>
-            <div label for="edit-todo-completed"><span class="modal-label">Completed:</span></label>
+            <div>
+                <label for="edit-todo-completed"><span class="modal-label">Completed:</span></label>
                 <input type="checkbox" id="edit-todo-completed" class="modal-input">
             </div>
             <div>
@@ -85,8 +84,7 @@
                     <option value="HIGH">High</option>
                 </select>
             </div>
-            <div id="edit-todo-button-div">
-            </div>
+            <input type="button" value="Edit Todo" id="confirm-edit-todo-button" data-project-index="" data-todo-index="">
         </div>
     </div>
     <header>
@@ -112,11 +110,7 @@
         </div>
         <div id="todo-panel">
             <div id="view-name"></div>
-            <div id="project-index" display="none" data-index="0"></div>
             <div id="todo-list"></div>
-            <div id="new-todo">
-                <button id="new-todo-button">+</button>
-            </div>
         </div>
     </main>
     <footer>

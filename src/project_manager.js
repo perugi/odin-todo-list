@@ -51,14 +51,14 @@ export default class ProjectManager {
   }
 
   filterTodos(filterFunction) {
-    let filteredProjects = [];
+    let filteredProjects = {};
     for (const project of this.projects) {
       let filteredTodos = project.getTodos().filter(filterFunction);
 
       if (filteredTodos.length === 0) continue;
       const filteredProject = new Project(project.getDisplayName());
       filteredProject.setTodos(filteredTodos);
-      filteredProjects.push(filteredProject);
+      filteredProjects[this.getProjectIndex(project)] = filteredProject;
     }
 
     return filteredProjects;
