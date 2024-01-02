@@ -34,10 +34,10 @@ export default class ProjectManager {
     this.projects.push(project);
   }
 
-  deleteProject(projectIndex) {
-    if (projectIndex > this.projects.length || projectIndex === 0) return;
+  deleteProject(project) {
+    if (!this.projects.includes(project)) return;
 
-    this.projects.splice(projectIndex, 1);
+    this.projects.splice(this.getProjectIndex(project), 1);
   }
 
   getAllTodosThisWeek() {

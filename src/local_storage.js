@@ -37,8 +37,9 @@ export default class Storage {
   }
 
   static deleteProject(projectIndex) {
+    console.log(projectIndex);
     const projectManager = Storage.getProjectManager();
-    projectManager.deleteProject(projectIndex);
+    projectManager.deleteProject(projectManager.getProject(projectIndex));
     Storage.saveProjectManager(projectManager);
   }
 

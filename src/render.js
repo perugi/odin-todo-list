@@ -128,53 +128,19 @@ export default class RenderWebsite {
     closeNewProjectModal.addEventListener("click", this.#hideNewProjectModal);
 
     // Edit Project modal listeners
-    const editProjectModal = document.querySelector("#edit-project-modal");
-
-    const confirmEditProject = editProjectModal.querySelector(
-      "#confirm-edit-project-button"
-    );
-    confirmEditProject.addEventListener("click", () => {
-      const editProjectName =
-        editProjectModal.querySelector("#edit-project-name");
-      const projectIndex = confirmEditProject.dataset.projectIndex;
-
-      this.projectManager
-        .getProject(projectIndex)
-        .setDisplayName(editProjectName.value);
-      Storage.editProject(projectIndex, editProjectName.value);
-
-      this.#renderUserProjects();
-      this.#renderProjectView(this.projectManager.getProject(projectIndex));
-      this.#hideEditProjectModal();
-    });
-
-    const closeEditProjectModal = editProjectModal.querySelector(
+    const closeEditProjectModal = document.querySelector(
       "#close-edit-project-modal"
     );
     closeEditProjectModal.addEventListener("click", this.#hideEditProjectModal);
 
     // Delete Project modal listeners
-    const deleteProjectModal = document.querySelector("#delete-project-modal");
-
-    const closeDeleteProjectModal = deleteProjectModal.querySelector(
+    const closeDeleteProjectModal = document.querySelector(
       "#close-delete-project-modal"
     );
     closeDeleteProjectModal.addEventListener(
       "click",
       this.#hideDeleteProjectModal
     );
-
-    const confirmDeleteProject = deleteProjectModal.querySelector(
-      "#confirm-delete-project-button"
-    );
-    confirmDeleteProject.addEventListener("click", () => {
-      const projectIndex = confirmDeleteProject.dataset.projectIndex;
-      this.projectManager.deleteProject(projectIndex);
-      Storage.deleteProject(projectIndex);
-      this.#renderUserProjects();
-      this.#renderProjectView(this.projectManager.getProject(0));
-      this.#hideDeleteProjectModal();
-    });
   }
 
   #showNewProjectModal() {
@@ -198,10 +164,23 @@ export default class RenderWebsite {
     const confirmButton = editProject.querySelector(
       "#confirm-edit-project-button"
     );
-    confirmButton.setAttribute(
-      "data-project-index",
-      this.projectManager.getProjectIndex(project)
-    );
+    const newConfirmButton = confirmButton.cloneNode(true);
+    confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+
+    newConfirmButton.addEventListener("click", () => {
+      const editProjectName =
+        editProjectModal.querySelector("#edit-project-name");
+
+      Storage.editProject(
+        this.projectManager.getProjectIndex(project),
+        editProjectName.value
+      );
+      project.setDisplayName(editProjectName.value);
+
+      this.#renderUserProjects();
+      this.#renderProjectView(project);
+      this.#hideEditProjectModal();
+    });
 
     editProject.style.display = "block";
   }
@@ -223,10 +202,17 @@ export default class RenderWebsite {
     const confirmButton = deleteProjectModal.querySelector(
       "#confirm-delete-project-button"
     );
-    confirmButton.setAttribute(
-      "data-project-index",
-      this.projectManager.getProjectIndex(project)
-    );
+    const newConfirmButton = confirmButton.cloneNode(true);
+    confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+
+    newConfirmButton.addEventListener("click", () => {
+      Storage.deleteProject(this.projectManager.getProjectIndex(project));
+      this.projectManager.deleteProject(project);
+
+      this.#renderUserProjects();
+      this.#renderProjectView(this.projectManager.getProject(0));
+      this.#hideDeleteProjectModal();
+    });
   }
 
   #hideDeleteProjectModal() {
@@ -235,6 +221,7 @@ export default class RenderWebsite {
   }
 
   #createTodoModalEventListeners() {
+    // TODO rework the indexes and event listeners from here.
     const addTodoModal = document.querySelector("#add-todo-modal");
 
     const closeTodoModal = addTodoModal.querySelector("#close-todo-modal");
