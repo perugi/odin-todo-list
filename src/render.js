@@ -232,8 +232,11 @@ function createTodoModalEventListeners(projectManager) {
   });
 }
 
-function showAddTodoModal(projectIndex) {
+function showAddTodoModal(projectIndex, project) {
   const addTodoModal = document.querySelector("#add-todo-modal");
+
+  const projectName = addTodoModal.querySelector("#add-todo-project-name");
+  projectName.textContent = project.displayName;
 
   const confirmButton = addTodoModal.querySelector("#confirm-add-todo-button");
   confirmButton.setAttribute("data-project-index", projectIndex);
@@ -283,7 +286,7 @@ function renderUserProjects(projectManager) {
     const deleteProject = document.createElement("div");
     deleteProject.classList.add("delete-project-button");
     deleteProject.addEventListener("click", () => {
-      showDeleteProjectModal(project.getDisplayName(), projectManager);
+      showDeleteProjectModal(project, projectManager);
     });
 
     projectElement.appendChild(projectName);
@@ -321,7 +324,7 @@ function showDeleteProjectModal(project, projectManager) {
     "#delete-project-name"
   );
 
-  deleteProjectName.textContent = project.getDisplayName;
+  deleteProjectName.textContent = project.getDisplayName();
   deleteProjectModal.style.display = "block";
 
   const confirmButton = deleteProjectModal.querySelector(
@@ -379,7 +382,7 @@ function renderView(viewName, projectList) {
     projectElement.appendChild(addTodoButton);
 
     addTodoButton.addEventListener("click", () => {
-      showAddTodoModal(projectIndex);
+      showAddTodoModal(projectIndex, projectList[projectIndex]);
     });
   }
 }
@@ -432,7 +435,12 @@ function renderProject(projectElement, projectObject, projectIndex) {
     const editTodo = document.createElement("button");
     editTodo.textContent = "Edit";
     editTodo.addEventListener("click", (event) => {
-      showEditTodoModal(projectIndex, todoIndex, todo);
+      showEditTodoModal(
+        projectIndex,
+        projectObject.displayName,
+        todoIndex,
+        todo
+      );
       event.stopPropagation();
     });
     todoOverview.appendChild(editTodo);
@@ -480,8 +488,13 @@ function renderProject(projectElement, projectObject, projectIndex) {
   }
 }
 
-function showEditTodoModal(projectIndex, todoIndex, todo) {
+function showEditTodoModal(projectIndex, projectName, todoIndex, todo) {
   const editTodoModal = document.querySelector("#edit-todo-modal");
+
+  const editTodoProjectName = editTodoModal.querySelector(
+    "#edit-todo-project-name"
+  );
+  editTodoProjectName.textContent = projectName;
 
   const editTodoCompleted = editTodoModal.querySelector("#edit-todo-completed");
   editTodoCompleted.checked = todo.getCompleted();
