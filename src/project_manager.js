@@ -55,7 +55,6 @@ export default class ProjectManager {
     for (const project of this.projects) {
       let filteredProject = {};
 
-      filteredProject["displayName"] = project.getDisplayName();
       filteredProject["originalProject"] = project;
 
       project
@@ -65,7 +64,7 @@ export default class ProjectManager {
           filteredProject[project.getTodoIndex(todo)] = todo;
         });
 
-      if (Object.keys(filteredProject).length === 2) continue;
+      if (Object.keys(filteredProject).length === 1) continue;
       filteredProjects[this.getProjectIndex(project)] = filteredProject;
     }
 

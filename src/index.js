@@ -4,7 +4,7 @@ import "./styles.css";
 import ProjectManager from "./project_manager";
 import Storage from "./local_storage";
 
-import { renderWebsite } from "./render";
+import RenderWebsite from "./render";
 
 let projectManager;
 if (Storage.getProjectManager()) {
@@ -13,4 +13,5 @@ if (Storage.getProjectManager()) {
   projectManager = new ProjectManager();
 }
 
-renderWebsite(projectManager);
+let renderWebsite = new RenderWebsite(projectManager);
+renderWebsite.render();
