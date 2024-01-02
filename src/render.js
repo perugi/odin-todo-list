@@ -43,6 +43,43 @@ function createStaticEventListeners(projectManager) {
   });
 }
 
+function renderUserProjects(projectManager) {
+  const userProjects = document.querySelector("#user-projects");
+  removeChildren(userProjects);
+
+  projectManager.getUserProjects().forEach((project) => {
+    const projectIndex = projectManager.getProjectIndex(project);
+
+    const projectElement = document.createElement("div");
+    projectElement.classList.add("project-list-element");
+
+    const projectName = document.createElement("div");
+    projectName.textContent = project.getDisplayName();
+    projectName.classList.add("project-name");
+    projectName.addEventListener("click", () => {
+      renderProjectView(projectIndex, project);
+      addSelectedClass(projectElement);
+    });
+
+    const editProject = document.createElement("div");
+    editProject.classList.add("edit-project-button");
+    editProject.addEventListener("click", () =>
+      showEditProjectModal(project, projectManager)
+    );
+
+    const deleteProject = document.createElement("div");
+    deleteProject.classList.add("delete-project-button");
+    deleteProject.addEventListener("click", () => {
+      showDeleteProjectModal(project, projectManager);
+    });
+
+    projectElement.appendChild(projectName);
+    projectElement.appendChild(editProject);
+    projectElement.appendChild(deleteProject);
+    userProjects.appendChild(projectElement);
+  });
+}
+
 function addSelectedClass(element) {
   const staticElements = [
     ...document.querySelectorAll("#static-selection>div"),
@@ -142,6 +179,51 @@ function hideNewProjectModal() {
   const projectName = newProject.querySelector("#new-project-name");
   projectName.value = "";
   newProject.style.display = "none";
+}
+
+function showEditProjectModal(project, projectManager) {
+  const editProject = document.querySelector("#edit-project-modal");
+
+  const editProjectName = editProject.querySelector("#edit-project-name");
+  editProjectName.value = project.getDisplayName();
+
+  const confirmButton = editProject.querySelector(
+    "#confirm-edit-project-button"
+  );
+  confirmButton.setAttribute(
+    "data-project-index",
+    projectManager.getProjectIndex(project)
+  );
+
+  editProject.style.display = "block";
+}
+
+function hideEditProjectModal() {
+  const editProject = document.querySelector("#edit-project-modal");
+  editProject.style.display = "none";
+}
+
+function showDeleteProjectModal(project, projectManager) {
+  const deleteProjectModal = document.querySelector("#delete-project-modal");
+  const deleteProjectName = deleteProjectModal.querySelector(
+    "#delete-project-name"
+  );
+
+  deleteProjectName.textContent = project.getDisplayName();
+  deleteProjectModal.style.display = "block";
+
+  const confirmButton = deleteProjectModal.querySelector(
+    "#confirm-delete-project-button"
+  );
+  confirmButton.setAttribute(
+    "data-project-index",
+    projectManager.getProjectIndex(project)
+  );
+}
+
+function hideDeleteProjectModal() {
+  const deleteProject = document.querySelector("#delete-project-modal");
+  deleteProject.style.display = "none";
 }
 
 function createTodoModalEventListeners(projectManager) {
@@ -259,86 +341,56 @@ function hideAddTodoModal() {
   addTodoModal.style.display = "none";
 }
 
-function renderUserProjects(projectManager) {
-  const userProjects = document.querySelector("#user-projects");
-  removeChildren(userProjects);
+function showEditTodoModal(projectIndex, projectName, todoIndex, todo) {
+  const editTodoModal = document.querySelector("#edit-todo-modal");
 
-  projectManager.getUserProjects().forEach((project) => {
-    const projectIndex = projectManager.getProjectIndex(project);
+  const editTodoProjectName = editTodoModal.querySelector(
+    "#edit-todo-project-name"
+  );
+  editTodoProjectName.textContent = projectName;
 
-    const projectElement = document.createElement("div");
-    projectElement.classList.add("project-list-element");
+  const editTodoCompleted = editTodoModal.querySelector("#edit-todo-completed");
+  editTodoCompleted.checked = todo.getCompleted();
 
-    const projectName = document.createElement("div");
-    projectName.textContent = project.getDisplayName();
-    projectName.classList.add("project-name");
-    projectName.addEventListener("click", () => {
-      renderProjectView(projectIndex, project);
-      addSelectedClass(projectElement);
-    });
+  const editTodoTitle = editTodoModal.querySelector("#edit-todo-title");
+  editTodoTitle.value = todo.getTitle();
 
-    const editProject = document.createElement("div");
-    editProject.classList.add("edit-project-button");
-    editProject.addEventListener("click", () =>
-      showEditProjectModal(project, projectManager)
-    );
+  const editTodoDescription = editTodoModal.querySelector(
+    "#edit-todo-description"
+  );
+  editTodoDescription.value = todo.getDescription();
 
-    const deleteProject = document.createElement("div");
-    deleteProject.classList.add("delete-project-button");
-    deleteProject.addEventListener("click", () => {
-      showDeleteProjectModal(project, projectManager);
-    });
+  const editTodoDate = editTodoModal.querySelector("#edit-todo-date");
+  editTodoDate.value = format(todo.getDueDate(), "yyyy-MM-dd");
 
-    projectElement.appendChild(projectName);
-    projectElement.appendChild(editProject);
-    projectElement.appendChild(deleteProject);
-    userProjects.appendChild(projectElement);
-  });
+  const editTodoPriority = editTodoModal.querySelector("#edit-todo-priority");
+  editTodoPriority.value = todo.getPriority();
+
+  const button = editTodoModal.querySelector("#confirm-edit-todo-button");
+  button.setAttribute("data-project-index", projectIndex);
+  button.setAttribute("data-todo-index", todoIndex);
+
+  editTodoModal.style.display = "block";
 }
 
-function showEditProjectModal(project, projectManager) {
-  const editProject = document.querySelector("#edit-project-modal");
+function hideEditTodoModal() {
+  const editTodoModal = document.querySelector("#edit-todo-modal");
 
-  const editProjectName = editProject.querySelector("#edit-project-name");
-  editProjectName.value = project.getDisplayName();
+  const editTodoTitle = editTodoModal.querySelector("#edit-todo-title");
+  editTodoTitle.value = "";
 
-  const confirmButton = editProject.querySelector(
-    "#confirm-edit-project-button"
+  const editTodoDescription = editTodoModal.querySelector(
+    "#edit-todo-description"
   );
-  confirmButton.setAttribute(
-    "data-project-index",
-    projectManager.getProjectIndex(project)
-  );
+  editTodoDescription.value = "";
 
-  editProject.style.display = "block";
-}
+  const editTodoDate = editTodoModal.querySelector("#edit-todo-date");
+  editTodoDate.value = "";
 
-function hideEditProjectModal() {
-  const editProject = document.querySelector("#edit-project-modal");
-  editProject.style.display = "none";
-}
+  const editTodoPriority = editTodoModal.querySelector("#edit-todo-priority");
+  editTodoPriority.value = "";
 
-function showDeleteProjectModal(project, projectManager) {
-  const deleteProjectModal = document.querySelector("#delete-project-modal");
-  const deleteProjectName = deleteProjectModal.querySelector(
-    "#delete-project-name"
-  );
-
-  deleteProjectName.textContent = project.getDisplayName();
-  deleteProjectModal.style.display = "block";
-
-  const confirmButton = deleteProjectModal.querySelector(
-    "#confirm-delete-project-button"
-  );
-  confirmButton.setAttribute(
-    "data-project-index",
-    projectManager.getProjectIndex(project)
-  );
-}
-
-function hideDeleteProjectModal() {
-  const deleteProject = document.querySelector("#delete-project-modal");
-  deleteProject.style.display = "none";
+  editTodoModal.style.display = "none";
 }
 
 function renderProjectView(projectIndex, project) {
@@ -486,58 +538,6 @@ function renderProject(projectElement, projectObject, projectIndex) {
 
     projectElement.appendChild(todoElement);
   }
-}
-
-function showEditTodoModal(projectIndex, projectName, todoIndex, todo) {
-  const editTodoModal = document.querySelector("#edit-todo-modal");
-
-  const editTodoProjectName = editTodoModal.querySelector(
-    "#edit-todo-project-name"
-  );
-  editTodoProjectName.textContent = projectName;
-
-  const editTodoCompleted = editTodoModal.querySelector("#edit-todo-completed");
-  editTodoCompleted.checked = todo.getCompleted();
-
-  const editTodoTitle = editTodoModal.querySelector("#edit-todo-title");
-  editTodoTitle.value = todo.getTitle();
-
-  const editTodoDescription = editTodoModal.querySelector(
-    "#edit-todo-description"
-  );
-  editTodoDescription.value = todo.getDescription();
-
-  const editTodoDate = editTodoModal.querySelector("#edit-todo-date");
-  editTodoDate.value = format(todo.getDueDate(), "yyyy-MM-dd");
-
-  const editTodoPriority = editTodoModal.querySelector("#edit-todo-priority");
-  editTodoPriority.value = todo.getPriority();
-
-  const button = editTodoModal.querySelector("#confirm-edit-todo-button");
-  button.setAttribute("data-project-index", projectIndex);
-  button.setAttribute("data-todo-index", todoIndex);
-
-  editTodoModal.style.display = "block";
-}
-
-function hideEditTodoModal() {
-  const editTodoModal = document.querySelector("#edit-todo-modal");
-
-  const editTodoTitle = editTodoModal.querySelector("#edit-todo-title");
-  editTodoTitle.value = "";
-
-  const editTodoDescription = editTodoModal.querySelector(
-    "#edit-todo-description"
-  );
-  editTodoDescription.value = "";
-
-  const editTodoDate = editTodoModal.querySelector("#edit-todo-date");
-  editTodoDate.value = "";
-
-  const editTodoPriority = editTodoModal.querySelector("#edit-todo-priority");
-  editTodoPriority.value = "";
-
-  editTodoModal.style.display = "none";
 }
 
 function removeChildren(parent) {
