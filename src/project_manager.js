@@ -51,21 +51,13 @@ export default class ProjectManager {
   }
 
   filterTodos(filterFunction) {
-    let filteredProjects = {};
+    let filteredProjects = new Map();
+
     for (const project of this.projects) {
-      let filteredProject = {};
+      let filteredTodos = project.getTodos().filter(filterFunction);
 
-      filteredProject["originalProject"] = project;
-
-      project
-        .getTodos()
-        .filter(filterFunction)
-        .forEach((todo) => {
-          filteredProject[project.getTodoIndex(todo)] = todo;
-        });
-
-      if (Object.keys(filteredProject).length === 1) continue;
-      filteredProjects[this.getProjectIndex(project)] = filteredProject;
+      if (filteredTodos.length == 0) continue;
+      filteredProjects.set(project, filteredTodos);
     }
 
     return filteredProjects;

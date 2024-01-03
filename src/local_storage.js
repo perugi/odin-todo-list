@@ -57,7 +57,9 @@ export default class Storage {
 
   static deleteTodo(projectIndex, todoIndex) {
     const projectManager = Storage.getProjectManager();
-    projectManager.getProject(projectIndex).deleteTodo(todoIndex);
+    projectManager
+      .getProject(projectIndex)
+      .deleteTodo(projectManager.getProject(projectIndex).getTodo(todoIndex));
     Storage.saveProjectManager(projectManager);
   }
 
