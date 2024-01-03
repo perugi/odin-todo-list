@@ -35,19 +35,21 @@ export default class RenderWebsite {
   }
 
   #createStaticEventListeners() {
-    const inbox = document.querySelector("#inbox");
+    const staticSelection = document.querySelector("#static-selection");
+
+    const inbox = staticSelection.querySelector("#inbox");
     inbox.addEventListener("click", () => {
-      this.#showInbox()
+      this.#showInbox();
       this.#addSelectedClass(inbox);
     });
 
-    const today = document.querySelector("#today");
+    const today = staticSelection.querySelector("#today");
     today.addEventListener("click", () => {
       this.#renderView("Today", this.projectManager.getAllTodosToday());
       this.#addSelectedClass(today);
     });
 
-    const thisWeek = document.querySelector("#this-week");
+    const thisWeek = staticSelection.querySelector("#this-week");
     thisWeek.addEventListener("click", () => {
       this.#renderView("This Week", this.projectManager.getAllTodosThisWeek());
       this.#addSelectedClass(thisWeek);
@@ -140,6 +142,11 @@ export default class RenderWebsite {
     );
   }
 
+  #showNewProjectModal() {
+    const newProject = document.querySelector("#new-project-modal");
+    newProject.style.display = "block";
+  }
+
   #newProjectEventHandler() {
     const projectName = document.querySelector("#new-project-name");
     const newProject = new Project(projectName.value);
@@ -147,11 +154,6 @@ export default class RenderWebsite {
     Storage.addProject(newProject);
     this.#renderUserProjects(this.projectManager);
     this.#hideNewProjectModal();
-  }
-
-  #showNewProjectModal() {
-    const newProject = document.querySelector("#new-project-modal");
-    newProject.style.display = "block";
   }
 
   #hideNewProjectModal() {
@@ -235,8 +237,10 @@ export default class RenderWebsite {
   }
 
   #renderProjectView(project) {
-    // Prepare project for rendering (turn into an object with project indexes for keys
-    // and with the todos as an object with todo indexes for keys.
+    // Prepare project for rendering (turn into a Map with project as a key and with
+    // the array of todos as the value.This mirrors the structure that is returned
+    // from the ProjectManager getAllTodosToday and getAllTodosThisWeek methods),
+    // which allows to use the same render function for all the views.
 
     let projectForRendering = new Map();
 
@@ -296,7 +300,7 @@ export default class RenderWebsite {
       check.checked = todo.getCompleted();
       check.type = "checkbox";
       check.addEventListener("click", (event) => {
-        this.#toggleCompletedEventHandler(project, todo, event);
+        this.#toggleCompletedEventHandler(project, todo, event.target.checked);
         event.stopPropagation();
       });
       todoOverview.appendChild(check);
@@ -346,13 +350,13 @@ export default class RenderWebsite {
     });
   }
 
-  #toggleCompletedEventHandler(project, todo, e) {
-    todo.setCompleted(e.target.checked);
+  #toggleCompletedEventHandler(project, todo, isChecked) {
+    todo.setCompleted(isChecked);
 
     Storage.setCompleted(
       this.projectManager.getProjectIndex(project),
       project.getTodoIndex(todo),
-      e.target.checked
+      isChecked
     );
   }
 
