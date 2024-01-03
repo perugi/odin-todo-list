@@ -41,16 +41,16 @@ export default class ProjectManager {
   }
 
   getAllTodosThisWeek() {
-    return this.filterTodos((todo) =>
+    return this.#filterTodos((todo) =>
       isThisWeek(todo.getDueDate(), { weekStartsOn: 1 })
     );
   }
 
   getAllTodosToday() {
-    return this.filterTodos((todo) => isToday(todo.getDueDate()));
+    return this.#filterTodos((todo) => isToday(todo.getDueDate()));
   }
 
-  filterTodos(filterFunction) {
+  #filterTodos(filterFunction) {
     let filteredProjects = new Map();
 
     for (const project of this.projects) {
