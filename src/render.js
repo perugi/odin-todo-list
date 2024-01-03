@@ -92,16 +92,11 @@ export default class RenderWebsite {
   }
 
   #addSelectedClass(element) {
-    const staticElements = [
+    const selectElements = [
       ...document.querySelectorAll("#static-selection>div"),
-    ];
-
-    const projectListElements = [
       ...document.querySelectorAll(".project-list-element"),
     ];
-
-    const allElements = [...staticElements, ...projectListElements];
-    allElements.forEach((element) => {
+    selectElements.forEach((element) => {
       element.classList.remove("selected");
     });
 
