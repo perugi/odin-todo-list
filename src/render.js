@@ -252,7 +252,12 @@ export default class RenderWebsite {
 
   #renderView(viewName, projectMap) {
     const viewNameElement = document.querySelector("#view-name");
-    viewNameElement.textContent = viewName;
+    if (viewName === "") {
+      viewNameElement.style.display = "none";
+    } else {
+      viewNameElement.textContent = viewName;
+      viewNameElement.style.display = "block";
+    }
 
     const todoList = document.querySelector("#todo-list");
     this.#removeChildren(todoList);
@@ -264,9 +269,13 @@ export default class RenderWebsite {
 
       this.#renderProject(projectElement, project, todos);
 
-      const addTodoButton = document.createElement("button");
+      const projectDivider = document.createElement("div");
+      projectDivider.classList.add("project-divider");
+      projectElement.appendChild(projectDivider);
+
+      const addTodoButton = document.createElement("div");
+      addTodoButton.textContent = "Add task";
       addTodoButton.classList.add("add-todo-button");
-      addTodoButton.textContent = "Add Todo";
       projectElement.appendChild(addTodoButton);
 
       addTodoButton.addEventListener("click", () => {
@@ -278,11 +287,15 @@ export default class RenderWebsite {
   #renderProject(projectElement, project, todos) {
     const projectName = document.createElement("h1");
     projectName.textContent = project.displayName;
+    projectName.classList.add("todo-panel-project-name");
     projectElement.appendChild(projectName);
 
     todos.forEach((todo) => {
       const todoElement = document.createElement("div");
       todoElement.classList.add("todo-element");
+      if (todo.getCompleted()) {
+        todoElement.classList.add("completed");
+      }
 
       const todoOverview = document.createElement("div");
       todoOverview.classList.add(
@@ -291,38 +304,51 @@ export default class RenderWebsite {
       );
       todoOverview.setAttribute("data-expanded", "false");
 
+      const firstRow = document.createElement("div");
+      firstRow.classList.add("todo-overview-first-row");
+
       const check = document.createElement("input");
       check.checked = todo.getCompleted();
       check.type = "checkbox";
       check.addEventListener("click", (event) => {
-        this.#toggleCompletedEventHandler(project, todo, event.target.checked);
+        this.#toggleCompletedEventHandler(
+          project,
+          todo,
+          event.target.checked,
+          todoElement
+        );
         event.stopPropagation();
       });
-      todoOverview.appendChild(check);
+      firstRow.appendChild(check);
 
       const title = document.createElement("div");
       title.textContent = todo.getTitle();
-      todoOverview.appendChild(title);
+      title.classList.add("todo-title");
+      firstRow.appendChild(title);
 
-      const dueDate = document.createElement("div");
-      dueDate.textContent = format(todo.getDueDate(), "d.M.yyyy");
-      todoOverview.appendChild(dueDate);
-
-      const editTodo = document.createElement("button");
-      editTodo.textContent = "Edit";
+      const editTodo = document.createElement("div");
+      editTodo.classList.add("edit-todo-button");
       editTodo.addEventListener("click", (event) => {
         this.#showEditTodoModal(project, todo);
         event.stopPropagation();
       });
-      todoOverview.appendChild(editTodo);
+      firstRow.appendChild(editTodo);
 
-      const deleteTodo = document.createElement("button");
-      deleteTodo.textContent = "X";
+      const deleteTodo = document.createElement("div");
+      deleteTodo.classList.add("delete-todo-button");
       deleteTodo.addEventListener("click", (event) => {
         this.#deleteTodoEventHandler(project, todo);
         event.stopPropagation();
       });
-      todoOverview.appendChild(deleteTodo);
+      firstRow.appendChild(deleteTodo);
+
+      const secondRow = document.createElement("div");
+      secondRow.classList.add("todo-overview-second-row");
+
+      const dueDate = document.createElement("div");
+      dueDate.textContent = format(todo.getDueDate(), "iii, d MMM yyyy");
+      dueDate.classList.add("todo-due-date");
+      secondRow.appendChild(dueDate);
 
       todoElement.addEventListener("click", () => {
         todoOverview.setAttribute(
@@ -333,6 +359,8 @@ export default class RenderWebsite {
         );
       });
 
+      todoOverview.appendChild(firstRow);
+      todoOverview.appendChild(secondRow);
       todoElement.appendChild(todoOverview);
 
       const todoDetails = document.createElement("div");
@@ -345,7 +373,7 @@ export default class RenderWebsite {
     });
   }
 
-  #toggleCompletedEventHandler(project, todo, isChecked) {
+  #toggleCompletedEventHandler(project, todo, isChecked, todoElement) {
     todo.setCompleted(isChecked);
 
     Storage.setCompleted(
@@ -353,6 +381,8 @@ export default class RenderWebsite {
       project.getTodoIndex(todo),
       isChecked
     );
+
+    todoElement.classList.toggle("completed");
   }
 
   #deleteTodoEventHandler(project, todo) {
