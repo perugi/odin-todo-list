@@ -357,32 +357,58 @@ checkbox:hover {
     margin: 4px 0;
 }
 
-#new-todo {
+#new-project-modal, #edit-project-modal, #delete-project-modal, #add-todo-modal, #edit-todo-modal {
+    display: none;
+    z-index: 2;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(0,0,0,0.3);
+    align-items: center;
+    justify-content: center;
+}
+
+#new-project-modal>.modal-content, 
+#edit-project-modal>.modal-content,
+#delete-project-modal>.modal-content,
+#add-todo-modal>.modal-content,
+#edit-todo-modal>.modal-content {
+    background-color: var(--background-color);
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: rgba(0,0,0,0.16) 0px 2px 8px 0px;
+}
+
+.modal-content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
 }
 
-#new-project-modal {
-    display: none;
+.modal-content>div {
+    display: flex;
 }
 
-#edit-project-modal {
-    display: none;
+.modal-content>div:first-child {
+    display: flex;
+    justify-content: space-between;
 }
 
-#delete-project-modal {
-    display: none;
+.modal-content>input[type="button"] {
+    align-self: center;
 }
 
-#add-todo-modal {
-    display: none;
+.modal-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
 }
 
-#edit-todo-modal {
-    display: none;
+.close-modal {
+    font-size: 24px;
+    font-weight: 300;
 }
-
 
 footer {
     display: flex;

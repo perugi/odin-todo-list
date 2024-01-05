@@ -139,7 +139,7 @@ export default class RenderWebsite {
 
   #showNewProjectModal() {
     const newProject = document.querySelector("#new-project-modal");
-    newProject.style.display = "block";
+    newProject.style.display = "flex";
   }
 
   #newProjectEventHandler() {
@@ -174,7 +174,7 @@ export default class RenderWebsite {
       this.#editProjectEventHandler(project);
     });
 
-    editProject.style.display = "block";
+    editProject.style.display = "flex";
   }
 
   #editProjectEventHandler(project) {
@@ -203,7 +203,7 @@ export default class RenderWebsite {
     );
 
     deleteProjectName.textContent = project.getDisplayName();
-    deleteProjectModal.style.display = "block";
+    deleteProjectModal.style.display = "flex";
 
     const confirmButton = deleteProjectModal.querySelector(
       "#confirm-delete-project-button"
@@ -430,7 +430,7 @@ export default class RenderWebsite {
       this.#addTodoEventHandler(project);
     });
 
-    addTodoModal.style.display = "block";
+    addTodoModal.style.display = "flex";
   }
 
   #addTodoEventHandler(project) {
@@ -498,7 +498,7 @@ export default class RenderWebsite {
       this.#editTodoEventHandler(project, todo);
     });
 
-    editTodoModal.style.display = "block";
+    editTodoModal.style.display = "flex";
   }
 
   #editTodoEventHandler(project, todo) {

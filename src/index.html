@@ -9,38 +9,44 @@
     <div id="modals">
         <div id="new-project-modal">
             <div class="modal-content">
-                <div>New Project</div>
-                <div id="close-project-modal" class="close-modal">&times;</div>
+                <div class="modal-title">New Project</div>
                 <div>
                     <label for="new-project-name" class="modal-label">Project Name:</label>
                     <input type="text" id="new-project-name" class="modal-input">
                 </div>
                 <input type="button" value="Create Project" id="confirm-new-project-button">
+                <div>
+                    <button id="close-project-modal">Cancel</button>
+                    <button id="confirm-new-project-button">Add</button>
+                </div>
             </div>
         </div>
         <div id="edit-project-modal">
             <div class="modal-content">
-                <div>Edit Project</div>
-                <div id="close-edit-project-modal" class="close-modal">&times;</div>
+                <div class="modal-title">Edit Project</div>
                 <div>
                     <label for="edit-project-name" class="modal-label">Project Name:</label>
                     <input type="text" id="edit-project-name" class="modal-input">
                 </div>
-                <button id="confirm-edit-project-button">Confirm</button>
+                <div>
+                    <button id="close-edit-project-modal">Cancel</button>
+                    <button id="confirm-edit-project-button">Save</button>
+                </div>
             </div>
         </div>
         <div id="delete-project-modal">
             <div class="modal-content">
-                <div>Delete Project</div>
+                <div class="modal-title">Delete Project</div>
                 <div>Are you sure you want to delete the project '<span id="delete-project-name"></span>'?</div>
-                <div id="close-delete-project-modal" class="close-modal">&times;</div>
-                <button id="confirm-delete-project-button">Confirm</button>
+                <div>
+                    <button id="close-delete-project-modal">Cancel</button>
+                    <button id="confirm-delete-project-button">Delete</button>
+                </div>
             </div>
         </div>
         <div id="add-todo-modal">
             <div class="modal-content">
-                <div>Add Todo</div>
-                <div id="close-todo-modal" class="close-modal">&times;</div>
+                <div class="modal-title">Add Todo</div>
                 <div>
                     <label for="add-todo-project-name" class="modal-label">Project:</label>
                     <div id="add-todo-project-name"></div>
@@ -66,12 +72,15 @@
                     </select>
                 </div>
                 <input type="button" value="Confirm" id="confirm-add-todo-button">
+                <div>
+                    <button id="close-todo-modal">Cancel</button>
+                    <button id="confirm-add-todo-button">Add</button>
+                </div>
             </div>
         </div>
         <div id="edit-todo-modal">
             <div class="modal-content">
-                <div>Edit Todo</div>
-                <div id="close-edit-todo-modal" class="close-modal">&times;</div>
+                <div class="modal-title">Edit Todo</div>
                 <div>
                     <label for="edit-todo-project-name" class="modal-label">Project:</label>
                     <div id="edit-todo-project-name"></div>
@@ -100,7 +109,10 @@
                         <option value="HIGH">High</option>
                     </select>
                 </div>
-                <input type="button" value="Confirm" id="confirm-edit-todo-button">
+                <div>
+                    <button id="close-edit-todo-modal">Cancel</button>
+                    <button id="confirm-edit-todo-button">Save</button>
+                </div>
             </div>
         </div>
     </div>
