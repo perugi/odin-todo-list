@@ -13,7 +13,11 @@
     --font-dark: #000000;
     --font-medium: #444444;
     --font-light: #a1a1a1;
-    --super-light: #f1f1f1;
+    --super-light: #f0f0f0;
+    --cancel-normal: rgb(245, 245, 245);
+    --cancel-hover: rgb(229, 229, 229);
+    --confirm-disabled: rgb(237, 165, 158);
+    --confirm-hover: rgb(195, 57, 44);
 }
 
 body {
@@ -380,6 +384,7 @@ checkbox:hover {
     padding: 16px;
     border-radius: 8px;
     box-shadow: rgba(0,0,0,0.16) 0px 2px 8px 0px;
+    width: 450px;
 }
 
 .modal-content {
@@ -387,11 +392,34 @@ checkbox:hover {
     flex-direction: column;
 }
 
+
 .modal-content>div {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+#delete-project-modal>.modal-content>div {
+    flex-direction: row;
+}
+
+.modal-content>div:has(input[type="checkbox"]) {
+    flex-direction: row;
+}
+
+.modal-content input[type="checkbox"] {
+    position: relative;
+    bottom: 3px;
+    margin-left: 8px;
+}
+
+.modal-content label {
+    font-weight: 500;
+    margin-bottom: 6px;
 }
 
 .modal-content>div:last-child {
+    flex-direction: row;
     justify-content: flex-end;
 }
 
@@ -405,10 +433,76 @@ checkbox:hover {
     margin-bottom: 8px;
 }
 
-.close-modal {
-    font-size: 24px;
-    font-weight: 300;
+.close-modal-button, .confirm-modal-button {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    margin-left: 12px;
+    margin-top: 16px;
 }
+
+.close-modal-button {
+    background-color: var(--cancel-normal);
+}
+
+.close-modal-button:hover {
+    background-color: var(--cancel-hover);
+}
+
+.close-modal-button:active, .confirm-modal-button:enabled:active, .add-todo-button:active {
+    transform: scale(0.98);
+}
+
+.confirm-modal-button {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.confirm-modal-button:disabled {
+    background-color: var(--confirm-disabled);
+}
+
+.confirm-modal-button:enabled:hover {
+    background-color: var(--confirm-hover);
+}
+
+.confirm-modal-button:hover, .close-modal-button:hover {
+    cursor: pointer;
+}
+
+#add-todo-project-name,
+#edit-todo-project-name {
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+input[type="text"],
+textarea,
+input[type="date"]
+{
+    border: solid var(--super-light) 1px;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+}
+
+select {
+    border: solid var(--super-light) 1px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    padding: 8px;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px; 
+}
+
+#delete-project-name {
+    font-weight: 700;
+}
+
 
 footer {
     display: flex;

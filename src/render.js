@@ -125,11 +125,19 @@ export default class RenderWebsite {
     const newProjectModalContent =
       newProjectModal.querySelector(".modal-content");
     closeNewProjectModal.addEventListener("click", this.#hideNewProjectModal);
-    newProjectModalContent.addEventListener("click", (event) => {
-      console.log("stop");
+    newProjectModalContent.addEventListener("mousedown", (event) => {
       event.stopPropagation();
     });
-    newProjectModal.addEventListener("click", this.#hideNewProjectModal);
+    newProjectModal.addEventListener("mousedown", this.#hideNewProjectModal);
+
+    const newProjectName = newProjectModal.querySelector("#new-project-name");
+    newProjectName.addEventListener("input", () => {
+      if (newProjectName.value === "") {
+        confirmNewProject.disabled = true;
+      } else {
+        confirmNewProject.disabled = false;
+      }
+    });
 
     // Edit Project modal listeners
     const editProjectModal = document.querySelector("#edit-project-modal");
@@ -139,10 +147,24 @@ export default class RenderWebsite {
     const editProjectModalContent =
       editProjectModal.querySelector(".modal-content");
     closeEditProjectModal.addEventListener("click", this.#hideEditProjectModal);
-    editProjectModalContent.addEventListener("click", (event) => {
+    editProjectModalContent.addEventListener("mousedown", (event) => {
       event.stopPropagation();
     });
-    editProjectModal.addEventListener("click", this.#hideEditProjectModal);
+    editProjectModal.addEventListener("mousedown", this.#hideEditProjectModal);
+
+    const editProjectName =
+      editProjectModal.querySelector("#edit-project-name");
+    editProjectName.addEventListener("input", () => {
+      const confirmEditProject = editProjectModal.querySelector(
+        "#confirm-edit-project-button"
+      );
+
+      if (editProjectName.value === "") {
+        confirmEditProject.disabled = true;
+      } else {
+        confirmEditProject.disabled = false;
+      }
+    });
 
     // Delete Project modal listeners
     const deleteProjectModal = document.querySelector("#delete-project-modal");
@@ -155,15 +177,26 @@ export default class RenderWebsite {
       "click",
       this.#hideDeleteProjectModal
     );
-    deleteProjectModalContent.addEventListener("click", (event) => {
+    deleteProjectModalContent.addEventListener("mousedown", (event) => {
       event.stopPropagation();
     });
-    deleteProjectModal.addEventListener("click", this.#hideDeleteProjectModal);
+    deleteProjectModal.addEventListener(
+      "mousedown",
+      this.#hideDeleteProjectModal
+    );
   }
 
   #showNewProjectModal() {
     const newProject = document.querySelector("#new-project-modal");
     newProject.style.display = "flex";
+
+    const projectName = newProject.querySelector("#new-project-name");
+    projectName.value = "";
+
+    const newProjectConfirm = newProject.querySelector(
+      "#confirm-new-project-button"
+    );
+    newProjectConfirm.disabled = true;
   }
 
   #newProjectEventHandler() {
@@ -177,8 +210,6 @@ export default class RenderWebsite {
 
   #hideNewProjectModal() {
     const newProject = document.querySelector("#new-project-modal");
-    const projectName = newProject.querySelector("#new-project-name");
-    projectName.value = "";
     newProject.style.display = "none";
   }
 
@@ -429,19 +460,45 @@ export default class RenderWebsite {
     const closeTodoModal = addTodoModal.querySelector("#close-todo-modal");
     const addTodoModalContent = addTodoModal.querySelector(".modal-content");
     closeTodoModal.addEventListener("click", this.#hideAddTodoModal);
-    addTodoModalContent.addEventListener("click", (event) => {
+    addTodoModalContent.addEventListener("mousedown", (event) => {
       event.stopPropagation();
     });
-    addTodoModal.addEventListener("click", this.#hideAddTodoModal);
+    addTodoModal.addEventListener("mousedown", this.#hideAddTodoModal);
+
+    const newTodoTitle = addTodoModal.querySelector("#new-todo-title");
+    newTodoTitle.addEventListener("input", () => {
+      const confirmAddTodo = addTodoModal.querySelector(
+        "#confirm-add-todo-button"
+      );
+
+      if (newTodoTitle.value === "") {
+        confirmAddTodo.disabled = true;
+      } else {
+        confirmAddTodo.disabled = false;
+      }
+    });
 
     const editTodoModal = document.querySelector("#edit-todo-modal");
     const closeEditTodoModal = document.querySelector("#close-edit-todo-modal");
     const editTodoModalContent = editTodoModal.querySelector(".modal-content");
     closeEditTodoModal.addEventListener("click", this.#hideEditTodoModal);
-    editTodoModalContent.addEventListener("click", (event) => {
+    editTodoModalContent.addEventListener("mousedown", (event) => {
       event.stopPropagation();
     });
-    editTodoModal.addEventListener("click", this.#hideEditTodoModal);
+    editTodoModal.addEventListener("mousedown", this.#hideEditTodoModal);
+
+    const editTodoTitle = editTodoModal.querySelector("#edit-todo-title");
+    editTodoTitle.addEventListener("input", () => {
+      const confirmEditTodo = editTodoModal.querySelector(
+        "#confirm-edit-todo-button"
+      );
+
+      if (editTodoTitle.value === "") {
+        confirmEditTodo.disabled = true;
+      } else {
+        confirmEditTodo.disabled = false;
+      }
+    });
   }
 
   #showAddTodoModal(project) {
@@ -463,6 +520,7 @@ export default class RenderWebsite {
     newConfirmButton.addEventListener("click", () => {
       this.#addTodoEventHandler(project);
     });
+    newConfirmButton.disabled = true;
 
     addTodoModal.style.display = "flex";
   }

@@ -11,12 +11,12 @@
             <div class="modal-content">
                 <div class="modal-title">New Project</div>
                 <div>
-                    <label for="new-project-name" class="modal-label">Project Name:</label>
+                    <label for="new-project-name" class="modal-label">Project Name</label>
                     <input type="text" id="new-project-name" class="modal-input">
                 </div>
                 <div>
-                    <button id="close-project-modal">Cancel</button>
-                    <button id="confirm-new-project-button">Add</button>
+                    <button id="close-project-modal" class="close-modal-button">Cancel</button>
+                    <button id="confirm-new-project-button" class="confirm-modal-button">Add project</button>
                 </div>
             </div>
         </div>
@@ -24,22 +24,22 @@
             <div class="modal-content">
                 <div class="modal-title">Edit Project</div>
                 <div>
-                    <label for="edit-project-name" class="modal-label">Project Name:</label>
+                    <label for="edit-project-name" class="modal-label">Project Name</label>
                     <input type="text" id="edit-project-name" class="modal-input">
                 </div>
                 <div>
-                    <button id="close-edit-project-modal">Cancel</button>
-                    <button id="confirm-edit-project-button">Save</button>
+                    <button id="close-edit-project-modal" class="close-modal-button">Cancel</button>
+                    <button id="confirm-edit-project-button" class="confirm-modal-button">Save</button>
                 </div>
             </div>
         </div>
         <div id="delete-project-modal">
             <div class="modal-content">
                 <div class="modal-title">Delete Project</div>
-                <div>Are you sure you want to delete the project '<span id="delete-project-name"></span>'?</div>
+                <div>Are you sure you want to delete&nbsp;<span id="delete-project-name"></span>?</div>
                 <div>
-                    <button id="close-delete-project-modal">Cancel</button>
-                    <button id="confirm-delete-project-button">Delete</button>
+                    <button id="close-delete-project-modal" class="close-modal-button">Cancel</button>
+                    <button id="confirm-delete-project-button" class="confirm-modal-button">Delete</button>
                 </div>
             </div>
         </div>
@@ -47,23 +47,23 @@
             <div class="modal-content">
                 <div class="modal-title">Add Todo</div>
                 <div>
-                    <label for="add-todo-project-name" class="modal-label">Project:</label>
+                    <label for="add-todo-project-name" class="modal-label">Project</label>
                     <div id="add-todo-project-name"></div>
                 </div>
                 <div>
-                    <label for="new-todo-title" class="modal-label">Title:</label>
+                    <label for="new-todo-title" class="modal-label">Title</label>
                     <input type="text" id="new-todo-title" class="modal-input">
                 </div>
                 <div>
-                    <label for="new-todo-description" class="modal-label">Description:</label>
-                    <textarea id="new-todo-description" class="modal-input"></textarea>
+                    <label for="new-todo-description" class="modal-label">Description</label>
+                    <textarea id="new-todo-description" class="modal-input" placeholder="Optional"></textarea>
                 </div>
                 <div>
-                    <label for="new-todo-date" class="modal-label">Due Date:</label>
+                    <label for="new-todo-date" class="modal-label">Due Date</label>
                     <input type="date" id="new-todo-date" class="modal-input">
                 </div>
                 <div>
-                    <label for="new-todo-priority" class="modal-label">Priority:</label>
+                    <label for="new-todo-priority" class="modal-label">Priority</label>
                     <select id="new-todo-priority" class="modal-input">
                         <option value="LOW">Low</option>
                         <option value="MEDIUM">Medium</option>
@@ -71,8 +71,8 @@
                     </select>
                 </div>
                 <div>
-                    <button id="close-todo-modal">Cancel</button>
-                    <button id="confirm-add-todo-button">Add</button>
+                    <button id="close-todo-modal" class="close-modal-button">Cancel</button>
+                    <button id="confirm-add-todo-button" class="confirm-modal-button">Add task</button>
                 </div>
             </div>
         </div>
@@ -80,27 +80,27 @@
             <div class="modal-content">
                 <div class="modal-title">Edit Todo</div>
                 <div>
-                    <label for="edit-todo-project-name" class="modal-label">Project:</label>
+                    <label for="edit-todo-project-name" class="modal-label">Project</label>
                     <div id="edit-todo-project-name"></div>
                 </div>
                 <div>
-                    <label for="edit-todo-completed" class="modal-label">Completed:</label>
+                    <label for="edit-todo-completed" class="modal-label">Completed</label>
                     <input type="checkbox" id="edit-todo-completed" class="modal-input">
                 </div>
                 <div>
-                    <label for="edit-todo-title" class="modal-label">Title:</label>
+                    <label for="edit-todo-title" class="modal-label">Title</label>
                     <input type="text" id="edit-todo-title" class="modal-input">
                 </div>
                 <div>
-                    <label for="edit-todo-description" class="modal-label">Description:</label>
-                    <textarea id="edit-todo-description" class="modal-input"></textarea>
+                    <label for="edit-todo-description" class="modal-label">Description</label>
+                    <textarea id="edit-todo-description" class="modal-input" placeholder="Optional"></textarea>
                 </div>
                 <div>
-                    <label for="edit-todo-date" class="modal-label">Due Date:</label>
+                    <label for="edit-todo-date" class="modal-label">Due Date</label>
                     <input type="date" id="edit-todo-date" class="modal-input">
                 </div>
                 <div>
-                    <label for="edit-todo-priority" class="modal-label">Priority:</label>
+                    <label for="edit-todo-priority" class="modal-label">Priority</label>
                     <select id="edit-todo-priority" class="modal-input">
                         <option value="LOW">Low</option>
                         <option value="MEDIUM">Medium</option>
@@ -108,8 +108,8 @@
                     </select>
                 </div>
                 <div>
-                    <button id="close-edit-todo-modal">Cancel</button>
-                    <button id="confirm-edit-todo-button">Save</button>
+                    <button id="close-edit-todo-modal" class="close-modal-button">Cancel</button>
+                    <button id="confirm-edit-todo-button" class="confirm-modal-button">Save</button>
                 </div>
             </div>
         </div>
