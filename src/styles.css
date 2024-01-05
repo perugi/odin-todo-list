@@ -375,6 +375,7 @@ checkbox:hover {
 #delete-project-modal>.modal-content,
 #add-todo-modal>.modal-content,
 #edit-todo-modal>.modal-content {
+    z-index: 3;
     background-color: var(--background-color);
     padding: 16px;
     border-radius: 8px;
@@ -390,9 +391,8 @@ checkbox:hover {
     display: flex;
 }
 
-.modal-content>div:first-child {
-    display: flex;
-    justify-content: space-between;
+.modal-content>div:last-child {
+    justify-content: flex-end;
 }
 
 .modal-content>input[type="button"] {

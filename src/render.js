@@ -114,27 +114,51 @@ export default class RenderWebsite {
     const confirmNewProject = newProjectModal.querySelector(
       "#confirm-new-project-button"
     );
-    confirmNewProject.addEventListener("click", this.#newProjectEventHandler);
+    confirmNewProject.addEventListener(
+      "click",
+      this.#newProjectEventHandler.bind(this)
+    );
 
     const closeNewProjectModal = newProjectModal.querySelector(
       "#close-project-modal"
     );
+    const newProjectModalContent =
+      newProjectModal.querySelector(".modal-content");
     closeNewProjectModal.addEventListener("click", this.#hideNewProjectModal);
+    newProjectModalContent.addEventListener("click", (event) => {
+      console.log("stop");
+      event.stopPropagation();
+    });
+    newProjectModal.addEventListener("click", this.#hideNewProjectModal);
 
     // Edit Project modal listeners
-    const closeEditProjectModal = document.querySelector(
+    const editProjectModal = document.querySelector("#edit-project-modal");
+    const closeEditProjectModal = editProjectModal.querySelector(
       "#close-edit-project-modal"
     );
+    const editProjectModalContent =
+      editProjectModal.querySelector(".modal-content");
     closeEditProjectModal.addEventListener("click", this.#hideEditProjectModal);
+    editProjectModalContent.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    editProjectModal.addEventListener("click", this.#hideEditProjectModal);
 
     // Delete Project modal listeners
-    const closeDeleteProjectModal = document.querySelector(
+    const deleteProjectModal = document.querySelector("#delete-project-modal");
+    const closeDeleteProjectModal = deleteProjectModal.querySelector(
       "#close-delete-project-modal"
     );
+    const deleteProjectModalContent =
+      deleteProjectModal.querySelector(".modal-content");
     closeDeleteProjectModal.addEventListener(
       "click",
       this.#hideDeleteProjectModal
     );
+    deleteProjectModalContent.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    deleteProjectModal.addEventListener("click", this.#hideDeleteProjectModal);
   }
 
   #showNewProjectModal() {
@@ -244,8 +268,6 @@ export default class RenderWebsite {
     project.getTodos().forEach((todo) => {
       projectForRendering.get(project).push(todo);
     });
-
-    console.log(projectForRendering);
 
     this.#renderView("", projectForRendering);
   }
@@ -403,11 +425,23 @@ export default class RenderWebsite {
   }
 
   #createTodoModalEventListeners() {
-    const closeTodoModal = document.querySelector("#close-todo-modal");
+    const addTodoModal = document.querySelector("#add-todo-modal");
+    const closeTodoModal = addTodoModal.querySelector("#close-todo-modal");
+    const addTodoModalContent = addTodoModal.querySelector(".modal-content");
     closeTodoModal.addEventListener("click", this.#hideAddTodoModal);
+    addTodoModalContent.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    addTodoModal.addEventListener("click", this.#hideAddTodoModal);
 
+    const editTodoModal = document.querySelector("#edit-todo-modal");
     const closeEditTodoModal = document.querySelector("#close-edit-todo-modal");
+    const editTodoModalContent = editTodoModal.querySelector(".modal-content");
     closeEditTodoModal.addEventListener("click", this.#hideEditTodoModal);
+    editTodoModalContent.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    editTodoModal.addEventListener("click", this.#hideEditTodoModal);
   }
 
   #showAddTodoModal(project) {
