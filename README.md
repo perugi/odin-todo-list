@@ -6,7 +6,6 @@ Design inspired by [todoist](https://app.todoist.com/app/today).
 💻 [Live Demo](https://perugi.github.io/odin-todo-list/) 💻
 
 ![screenshot](https://github.com/perugi/odin-todo-list/assets/38496182/843a5872-948b-4805-b515-11944f310674)
-)
 
 ## 💡 Features
 - Default (Inbox) project for storing todos.
